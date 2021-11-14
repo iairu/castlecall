@@ -2,13 +2,15 @@
 #include <map>
 #include <list>
 
+#include "ppgso.h"
 #include "scene.h"
-#include "../objects/demo.h" // objects are imported here
 
-// (later this will be moved into scenewindow.h and scenewindow.cpp similar to scene.h and scene.cpp)
+// #include "../objects/demo.h" // objects are imported here
 
-// class SceneWindow : public ppgso::Window { // <-- make this work as an actual window
-class Window {
+// (later this will be moved into window.h and window.cpp)
+// (similar to scene.h and scene.cpp)
+
+class Window : public ppgso::Window {
 private:
     Scene scene;
 
@@ -25,8 +27,7 @@ private:
     }
 
 public:
-    // SceneWindow() : Window{"CastleCall", 1280, 720} { // <-- then make this work
-    Window() {
+    Window() : ppgso::Window{"CastleCall", 1280, 720} { // <-- then make this work
         // // Initialize OpenGL state
         // // Enable Z-buffer
         // glEnable(GL_DEPTH_TEST); // <-- make opengl work
