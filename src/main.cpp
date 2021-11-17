@@ -3,12 +3,13 @@
 #include <list>
 
 #include <ppgso/ppgso.h>
+#include "scene/sceneWindow.cpp"
 
 const unsigned int SIZE = 512;
 
 int main() {
     // Initialize CastleCall window
-    ppgso::Window window("Castle Call", 1280, 720); // Window in HD
+    SceneWindow window;
 
     // Main execution loop
     while (window.pollEvents()) {}

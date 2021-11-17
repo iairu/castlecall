@@ -107,7 +107,7 @@ target_include_directories(ppgso PUBLIC
 add_executable(main
     src/scene/object.cpp
     src/scene/scene.cpp
-    src/scene/window.cpp 
+    src/scene/sceneWindow.cpp 
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)
