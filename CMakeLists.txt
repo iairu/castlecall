@@ -102,7 +102,10 @@ target_include_directories(ppgso PUBLIC
 #
 
 # Main target
+# If VSCode IntelliSense is giving error squiggles on external includes (mostly dependencies) within a specific .cpp file
+# make sure the .cpp file is present within the list below, else it isn't being processed properly
 add_executable(main
+    src/scene/object.cpp
     src/scene/scene.cpp
     src/scene/window.cpp 
     src/main.cpp)
