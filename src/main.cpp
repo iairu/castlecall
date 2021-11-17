@@ -2,13 +2,13 @@
 #include <map>
 #include <list>
 
-#include "scene\window.cpp"
+#include <ppgso/ppgso.h>
 
 const unsigned int SIZE = 512;
 
 int main() {
     // Initialize CastleCall window
-    Window window;
+    ppgso::Window window("Castle Call", 1280, 720); // Window in HD
 
     // Main execution loop
     while (window.pollEvents()) {}
