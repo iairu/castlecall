@@ -5,7 +5,7 @@
 #include "ppgso.h"
 #include "scene.h"
 
-// #include "../objects/demo.h" // objects are imported here
+// #include "../objects/demo.h" // IMPORT OBJECTS HERE
 
 // (later this will be moved into window.h and window.cpp)
 // (similar to scene.h and scene.cpp)
@@ -15,48 +15,54 @@ private:
     Scene scene;
 
     void initScene() {
-        // scene.objects.clear();
+        scene.objects.clear();
 
         // Create a camera
+        // scene.camera =
 
-        // Add skybox
+        // ADD OBJECTS HERE
 
-        // Add enemies to the scene
+            // Add skybox
+            // scene.objects.push_back()
 
-        // Add a player to the scene
+            // Add enemies to the scene
+            // scene.objects.push_back()
+
+            // Add a player to the scene
+            // scene.objects.push_back()
     }
 
 public:
-    Window() : ppgso::Window{"CastleCall", 1280, 720} { // <-- then make this work
-        // // Initialize OpenGL state
-        // // Enable Z-buffer
-        // glEnable(GL_DEPTH_TEST); // <-- make opengl work
-        // glDepthFunc(GL_LEQUAL);
+    Window() : ppgso::Window{"CastleCall", 1280, 720} {
+        // Initialize OpenGL state
+        // Enable Z-buffer
+        glEnable(GL_DEPTH_TEST); // <-- make opengl work
+        glDepthFunc(GL_LEQUAL);
 
-        // // Enable polygon culling
-        // glEnable(GL_CULL_FACE);
-        // glFrontFace(GL_CCW);
-        // glCullFace(GL_BACK);
+        // Enable polygon culling
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
 
         initScene();
     }
 
     // void onIdle() override {
     void onIdle()  {
-        // // Track time
-        // static auto time = (float) glfwGetTime();
+        // Track time
+        static auto time = (float) glfwGetTime();
 
-        // // Compute time delta
-        // float dt = (float) glfwGetTime() - time;
+        // Compute time delta
+        float dt = (float) glfwGetTime() - time;
 
-        // // Set white background
-        // glClearColor(1, 1, 1, 0);
+        // Set dark gray background
+        glClearColor(0.1f, 0.1f, 0.1f, 0);
 
-        // // Clear depth and color buffers
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Clear depth and color buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // // Update and render all objects
-        // scene.update(dt);
-        // scene.render();
+        // Update and render all objects
+        scene.update(dt);
+        scene.render();
     }
 };

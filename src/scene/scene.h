@@ -5,6 +5,8 @@
 #include <map>
 #include <list>
 
+#include "object.h"
+
 class Scene {
     public:
         void update(float time); // mass update all objects
@@ -14,7 +16,7 @@ class Scene {
         // std::unique_ptr<Camera> camera;
 
         // List of all objects to be rendered in this scene
-        // std::list<std::unique_ptr<Object>> objects;
+        std::list<std::unique_ptr<Object>> objects;
 
         // Keyboard state (map)
 
