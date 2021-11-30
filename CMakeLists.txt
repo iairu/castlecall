@@ -108,6 +108,7 @@ add_executable(main
     src/scene/object.cpp
     src/scene/scene.cpp
     src/scene/sceneWindow.cpp 
+    src/scene/camera.cpp
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)
