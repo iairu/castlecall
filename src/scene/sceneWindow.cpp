@@ -5,6 +5,8 @@
 #include <ppgso/ppgso.h>
 #include "scene.h"
 
+#include "map.h"
+
 // #include "../objects/demo.h" // IMPORT OBJECTS HERE
 
 // (later this will be moved into window.h and window.cpp)
@@ -21,6 +23,8 @@ private:
         auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
         camera->position.z = -15.0f;
         scene.camera = move(camera);
+
+        Map::placeItems(&scene);
 
         // ADD OBJECTS HERE
 
