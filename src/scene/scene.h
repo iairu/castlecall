@@ -6,6 +6,7 @@
 #include <list>
 
 #include "object.h"
+#include "camera.h"
 
 class Scene {
     public:
@@ -13,10 +14,12 @@ class Scene {
         void render(); // mass render all objects
 
         // Camera
-        // std::unique_ptr<Camera> camera;
+        std::unique_ptr<Camera> camera;
 
         // List of all objects to be rendered in this scene
         std::list<std::unique_ptr<Object>> objects;
+
+        glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f}; // default, make dynamic later...
 
         // Keyboard state (map)
 
