@@ -16,15 +16,18 @@ class SceneWindow : public ppgso::Window {
 private:
     Scene scene;
 
+    Map * map;
+
     void initScene() {
         scene.objects.clear();
         
         // Create a camera
         auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-        camera->position.z = -15.0f;
+        camera->position.z = -10.0f;
         scene.camera = move(camera);
 
-        Map::placeItems(&scene);
+        this->map = new Map;
+        this->map->placeItems(2, &scene);
 
         // ADD OBJECTS HERE
 

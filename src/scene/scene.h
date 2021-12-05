@@ -19,7 +19,7 @@ class Scene {
         // List of all objects to be rendered in this scene
         std::list<std::unique_ptr<Object>> objects;
 
-        glm::vec3 lightDirection{-1.0f, -1.0f, -1.0f}; // default, make dynamic later...
+        glm::vec3 lightDirection{-1.0f, 1.0f, -1.0f}; // default, make dynamic later...
 
         // Keyboard state (map)
 

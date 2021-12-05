@@ -13,23 +13,49 @@
 #include "scene.h"
 #include "object.h"
 
-typedef enum _ITMTYPE {TOWER, TERRAIN, HALL} ITMTYPE;
+typedef enum _ITMTYPE {
+    WALL,
+    LIGHT,
+    SKYBOX,
+    GROUND_WILD,
+    SHROOM,
+    WATER,
+    MENU_LOGO,
+    MENU_TXT,
+    ROCK,
+    GROUND_CASTLE,
+    CASTLE,
+    GATEWAY,
+    TOWER,
+    BRIDGE,
+    HALL,
+    HIGH_TOWER,
+    STAIRS
+} ITMTYPE;
 
 typedef struct _MAPITEM {
     ITMTYPE object;
     glm::vec3 pos;
     glm::vec3 rotation;
     glm::vec3 scale;
+    glm::vec3 dim;
 } MAPITEM, *PMAPITEM;
+
+typedef struct _SCENE_DESC {
+    unsigned int scene_id;
+    std::vector<MAPITEM> map;
+} SCENE_DESC, *PSCENE_DESC;
 
 class Map {
     private:
-        static MAPITEM map[];
+        std::vector<SCENE_DESC> scenes;
 
-        static std::unique_ptr<Object> getObj(ITMTYPE tgt_obj);
+        std::unique_ptr<Object> getObj(ITMTYPE tgt_obj);
 
     public:
-        static void placeItems(Scene *scene);
+        Map();
+
+        void placeItems(unsigned int scene_id, Scene *scene);
 };
 
 #endif
