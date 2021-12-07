@@ -8,9 +8,18 @@
 #include "obj/tower.h"
 #include "obj/shroom.h"
 #include "obj/ground_wild.h"
+#include "obj/ground_castle.h"
 #include "obj/rock.h"
 #include "obj/water.h"
 #include "obj/bridge.h"
+#include "obj/menu_logo.h"
+#include "obj/menu_txt.h"
+#include "obj/skybox.h"
+#include "obj/hall.h"
+#include "obj/high_tower.h"
+#include "obj/stairs.h"
+#include "obj/gate.h"
+#include "obj/gatewall.h"
 #include "obj/wall.h"
 
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
@@ -18,8 +27,20 @@ std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
         case WALL:
             return std::make_unique<Wall>();
             break;
+        case SKYBOX:
+            return std::make_unique<Skybox>();
+            break;
+        case MENU_LOGO:
+            return std::make_unique<MenuLogo>();
+            break;
+        case MENU_TXT:
+            return std::make_unique<MenuTXT>();
+            break;
         case GROUND_WILD:
             return std::make_unique<GroundWild>();
+            break;
+        case GROUND_CASTLE:
+            return std::make_unique<GroundCastle>();
             break;
         case SHROOM:
             return std::make_unique<Shroom>();
@@ -36,6 +57,21 @@ std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
         case TOWER:
             return std::make_unique<Tower>();
             break;
+        case HALL:
+            return std::make_unique<Hall>();
+            break;
+        case HIGH_TOWER:
+            return std::make_unique<HighTower>();
+            break;
+        case STAIRS:
+            return std::make_unique<Stairs>();
+            break;
+        case GATE:
+            return std::make_unique<Gate>();
+            break;
+        case GATEWALL:
+            return std::make_unique<Gatewall>();
+            break;
         default:
             break;
     }
@@ -50,7 +86,7 @@ Map::Map() {
     MAPITEM mapitem;
 
 	
-	f.open("../data/map.txt", std::fstream::in);
+	f.open("res/map.txt", std::fstream::in);
 	
 	if ( f.is_open() ) {
 		

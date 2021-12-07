@@ -23,7 +23,7 @@ private:
         
         // Create a camera
         auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-        camera->position.z = -10.0f;
+        camera->position.z = -2.0f;
         scene.camera = move(camera);
 
         this->map = new Map;
