@@ -1,20 +1,20 @@
-#include "bridge.h"
+#include "skybox.h"
 #include "paths.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
 
-std::unique_ptr<ppgso::Mesh> Bridge::mesh;
-std::unique_ptr<ppgso::Texture> Bridge::texture;
-std::unique_ptr<ppgso::Shader> Bridge::shader;
+std::unique_ptr<ppgso::Mesh> Skybox::mesh;
+std::unique_ptr<ppgso::Texture> Skybox::texture;
+std::unique_ptr<ppgso::Shader> Skybox::shader;
 
-Bridge::Bridge() {
+Skybox::Skybox() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "nature.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "/bridge.obj");
+    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "skybox.bmp"));
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "skybox.obj");
 }
 
-void Bridge::render(Scene &scene) {
+void Skybox::render(Scene &scene) {
 
     shader->use();
 

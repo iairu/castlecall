@@ -1,20 +1,20 @@
-#include "bridge.h"
+#include "gate.h"
 #include "paths.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
 
-std::unique_ptr<ppgso::Mesh> Bridge::mesh;
-std::unique_ptr<ppgso::Texture> Bridge::texture;
-std::unique_ptr<ppgso::Shader> Bridge::shader;
+std::unique_ptr<ppgso::Mesh> Gate::mesh;
+std::unique_ptr<ppgso::Texture> Gate::texture;
+std::unique_ptr<ppgso::Shader> Gate::shader;
 
-Bridge::Bridge() {
+Gate::Gate() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "nature.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "/bridge.obj");
+    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "gate_hall.bmp"));
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "gate.obj");
 }
 
-void Bridge::render(Scene &scene) {
+void Gate::render(Scene &scene) {
 
     shader->use();
 

@@ -1,4 +1,5 @@
 #include "water.h"
+#include "paths.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
@@ -9,8 +10,8 @@ std::unique_ptr<ppgso::Shader> Water::shader;
 
 Water::Water() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("../data/bmp/water.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>("../data/water_bezieranim.obj");
+    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "water.bmp"));
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "water_bezieranim.obj");
 }
 
 void Water::render(Scene &scene) {
