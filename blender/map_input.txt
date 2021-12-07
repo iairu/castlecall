@@ -1,0 +1,29 @@
+# resource mapping to ids for simpler cpp management
+# this does not account for scene numbers, those are represented directly in blender
+# internally loaded by map.py, make sure all object names are represented exactly as they're found in blender
+
+# map.py: if an unmapped object (object whose name does not appear here) is encountered, its id will be "X"
+
+# format: id name
+# id can be anything not just numbers, but it should be a number (because later cpp usage implementation)
+# names can be anything not just numbers, but they must be unique
+# hash-lines are comments
+
+0 wall
+1 sun
+2 skybox
+3 ground_wild
+4 shroom
+5 water
+6 menu_logo
+7 menu_text
+8 rock
+9 ground_castle
+10 castle
+11 wall_gate
+12 wall_rest
+13 bridge
+14 hall
+15 hightower
+16 stairs
+17 gate

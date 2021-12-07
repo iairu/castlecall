@@ -1,5 +1,5 @@
+from typing import Callable
 import bpy
-import os
 
 # HOW TO RUN: open in blender using built-in "Text Editor" or built-in "Python Console"
 # /\ will resolve bpy and auto-import currently opened blender project as bpy.context
@@ -7,15 +7,25 @@ import os
 # DON'T OPEN IN NORMAL TERMINAL, or you will get errors because of missing context
 
 class Obj:
-    def __init__(self,  name:str = "?", path:str = "", type:str = "LIGHT",
+    def _getSortableId_(self):
+        intId = -1
+        try:
+            intId = int(self.id)
+        except:
+            intId = -1
+        return intId
+
+    def __init__(self,  _id:str = "X", sceneIds = ["X"], path = "", _type = "", name = "",
                         pos_x:float = 0.0, pos_y:float = 0.0, pos_z:float = 0.0,
                         rot_x:float = 0.0, rot_y:float = 0.0, rot_z:float = 0.0,
                         scale_x:float = 0.0, scale_y:float = 0.0, scale_z:float = 0.0,
-                        dim_x:float = 0.0, dim_y:float = 0.0, dim_z:float = 0.0,
-                        uv_file:str = ""):
-        self.name = name
+                        dim_x:float = 0.0, dim_y:float = 0.0, dim_z:float = 0.0):
+        self.id = _id
+        self.sortableId = self._getSortableId_()
+        self.sceneIds = sceneIds
         self.path = path
-        self.type = type
+        self.name = name
+        self.type = _type
         self.precision = 17 # blender default, also python maximal float precision
         
         self.pos_x = pos_x
@@ -35,7 +45,6 @@ class Obj:
         self.dim_y = dim_y
         self.dim_z = dim_z
 
-        self.uv_file = uv_file
         return
     
     def normalize(self, max_pos:float, max_rot:float, max_scale:float, max_dim:float, precision:int = 17):
@@ -57,63 +66,46 @@ class Obj:
         self.dim_y = self.dim_y / max_dim
         self.dim_z = self.dim_z / max_dim
         return
-    
+
+
     def __str__(self):
-        return  self.path + " " + self.type + " " + self.name + " " + \
+        return  self.id + " " + \
                 format(self.pos_x, "." + str(self.precision) + "f") + " " + format(self.pos_y, "." + str(self.precision) + "f") + " " + format(self.pos_z, "." + str(self.precision) + "f") + " " + \
                 format(self.rot_x, "." + str(self.precision) + "f") + " " + format(self.rot_y, "." + str(self.precision) + "f") + " " + format(self.rot_z, "." + str(self.precision) + "f") + " " + \
                 format(self.scale_x, "." + str(self.precision) + "f") + " " + format(self.scale_y, "." + str(self.precision) + "f") + " " + format(self.scale_z, "." + str(self.precision) + "f") + " " + \
-                format(self.dim_x, "." + str(self.precision) + "f") + " " + format(self.dim_y, "." + str(self.precision) + "f") + " " + format(self.dim_z, "." + str(self.precision) + "f") + " " + \
-                self.uv_file
-    
-# ------------
+                format(self.dim_x, "." + str(self.precision) + "f") + " " + format(self.dim_y, "." + str(self.precision) + "f") + " " + format(self.dim_z, "." + str(self.precision) + "f")
 
-class Utils:
-    def _fixSlashes_(string: str, to: str, removeDuplicates: bool):
-        out = ""
-        pchar = ""
-        for char in string:
-            if (char in ["/","\\"]):
-                if (removeDuplicates and pchar == char):
-                    continue
-                out += to
-            else:
-                out += char
-            pchar = char
+class ObjGrabber:
+    def _processObject_(bobj, path, objModCallback: Callable): # Blender object (bobj) to custom object (Obj) linker
+        _id = objModCallback("id", bobj, path)
+        if (_id == None):
+            return None # abort creation
 
-        return out
-    
-    def _getMaterialTextureFilepath_(bobj): # gets filepath of the image texture of the first material, else empty string
-        if (not bobj.type == "MESH" or len(bobj.data.materials) < 1):
-            return ""
+        sceneIds = objModCallback("sceneIds", bobj, path)
+        if (sceneIds == None):
+            return None # abort creation
 
-        material = bobj.data.materials[0]
+        name = objModCallback("name", bobj, path)
+        if (name == None):
+            return None # abort creation
 
-        path = ""
-        for node in material.node_tree.nodes:
-            if not (node.name == "Image Texture"):
-                continue
-            path = node.image.filepath
-        return Utils._fixSlashes_(path, "/", True)
-        
-
-    def _processObject_(bobj, path): # Blender object (bobj) to custom object (Obj) linker
-        return Obj( name=bobj.name, path=path, type=bobj.type,
+        return Obj( _id=_id, sceneIds=sceneIds, path=path, _type=bobj.type, name=bobj.name,
                     pos_x=bobj.location.x, pos_y=bobj.location.y, pos_z=bobj.location.z,
                     scale_x=bobj.scale.x, scale_y=bobj.scale.y, scale_z=bobj.scale.z,
                     rot_x=bobj.rotation_euler.x, rot_y=bobj.rotation_euler.y, rot_z=bobj.rotation_euler.z,
-                    dim_x=bobj.dimensions.x, dim_y=bobj.dimensions.y, dim_z=bobj.dimensions.z,
-                    uv_file=Utils._getMaterialTextureFilepath_(bobj))
+                    dim_x=bobj.dimensions.x, dim_y=bobj.dimensions.y, dim_z=bobj.dimensions.z)
 
-    def grabObjects(root_collection, objs = [], path = ""):
+    def grabObjects(root_collection, objModCallback: Callable, objs = [], path = ""):
         if (root_collection.name != "Master Collection"):
             path += "/" + root_collection.name
         
         for collection in root_collection.children:
-            objs = Utils.grabObjects(collection, objs, path)
+            objs = ObjGrabber.grabObjects(collection, objModCallback, objs, path)
         
         for obj in root_collection.objects:
-            objs.append(Utils._processObject_(obj, path))
+            ownobj = ObjGrabber._processObject_(obj, path, objModCallback)
+            if (ownobj != None):
+                objs.append(ownobj)
             
         return objs
 
@@ -139,30 +131,58 @@ class FileBuffer:
 
 # ------------
 
-# prepare buffer for a savefile
-output = FileBuffer("C:/zSchool/PPGSO/Projekt/blender/map.txt")
+class NameMap: # name -> id
+    def __init__(self, path:str = "", printUnknown: bool = True):
+        self.path = path
+        self.printUnknown = printUnknown
 
-output.push("# CastleCall Object Map (by iairu)")
-output.push("# generated using bpy library and a script for custom syntax definition")
-output.push("# ---------------------------------------------------")
-output.push("# name: char == #: arraymod is present #x;y;z;n (x;y;z clone translation RELATIVE to object space, n is clone count)")
-output.push("# path type name pos_x y z rot_x y z scale_x y z dim_x y z (uv_file if type == MESH)")
+        self.mapped = {}
+        with open(path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
 
-objs = Utils.grabObjects(bpy.context.scene.collection)
-for o in objs:
-    # only add "triangulated" collection of objects (and don't mention it)
-    if isinstance(o, Obj) and "/triangulated" in o.path:
-        o.path = o.path.split("/triangulated")[1]
+        for line in lines:
+            if (len(line) > 0 and line[0] != "#"):
+                # process given line
+                _id = ""
+                name = ""
+                ignore = False
+                idFinished = False
+                for char in line:
+                    if (char == " "):
+                        if (_id != ""):
+                            idFinished = True # start loading name
+                        else:
+                            ignore = True # space encountered before any ids -> wrong syntax -> ignore this line
+                            break
+                    elif (idFinished == False):
+                        _id += char
+                    elif (idFinished == True):
+                        name += char
 
-        # remove .nnn from equivalently named "clones" collection
-        # must be last collection in given part of hierarchy to work well
-        if "/clones" in o.path:
-            o.path = o.path.split("/clones")[0] + "/clones"
+                _id = _id.replace("\n", "")
+                name = name.replace("\n", "")
 
+                if (_id == "" or name == ""):
+                    ignore = True # empty line? ignore
+
+                if (not ignore): # save name -> _id
+                    self.mapped[name] = _id
+        return
+
+    def _unknownId_(self, name: str):
+        if (self.printUnknown == True):
+            print("[" + self.path + "] missing: " + name)
+        return "X"
+
+    def getId(self, name:str = "") -> str:
+        return self.mapped.get(name, self._unknownId_(name)) # return X as default
+
+class NameMapUtils:
+    def cleanName(uncleanName: str):
         # modify names to match .obj names (in other words remove .nnn from duplicates and other hints)
         newname = ""
         arraymod = False
-        for i, char in enumerate(o.name):
+        for i, char in enumerate(uncleanName):
             if (char == "#"):
                 arraymod = True # arraymod numbers started
             elif (arraymod and char == ","):
@@ -174,7 +194,93 @@ for o in objs:
             elif (not arraymod and char in ["0","1","2","3","4","5","6","7","8","9"]):
                 continue # remove numbers unless they're arraymod parameters
             newname += char
-        o.name = newname
+        return newname
+
+class SceneMapUtils: # /s1_s2_s3/abcd -> [1,2,3]
+    def extractSceneIds(source: str) -> list:
+        scenes = []
+
+        curr = ""
+        for i, char in enumerate(source):
+            if (i == 0 and char == "/"):
+                continue # ignore first / if found
+            elif (char in ["/", " ", "_"]):
+                if (curr != ""): # save built scene id
+                    scenes.append(curr)
+                curr = "" # next scene id coming
+                loading = False
+                if (char == "/"):
+                    break # end of scene declarations
+            elif (char == "s" and curr == ""):
+                loading = True # next scene id coming guaranteed
+            elif (char in ["0","1","2","3","4","5","6","7","8","9"] and loading):
+                curr += char # building scene id
+            else:
+                break # unrecognizable format from this point - stop and export whatever exists
+
+        if (len(scenes) == 0):
+            scenes.append("X") # no scene numbers found - placeholder X
+
+        return scenes
+
+class SceneMap:
+    def __init__(self):
+        self.scenes = []
+
+    def appendBySceneId(self, sceneId: str, obj: Obj):
+        found = -1
+        for i, scene in enumerate(self.scenes):
+            if scene[0] == sceneId:
+                found = i
+                scene[1].append(obj)
+                break
+
+        if (found == -1):
+            self.scenes.append([sceneId, [obj]])
+        
+        return
+        
+    def sort(self):
+        # sort the scenes ( [[sceneId, [objs...]]...] ) by their sceneId
+        self.scenes = sorted(self.scenes, key = lambda scene: scene[0])
+        scenerange = range(len(self.scenes))
+        for i in scenerange: # sort the objects under a scene ( [objs...] ) by their id (Obj class assumed)
+            self.scenes[i][1] = sorted(self.scenes[i][1], key = lambda obj: obj.sortableId)
+        return self.scenes
+
+# -------------
+
+# input
+nmap = NameMap("C:/zSchool/PPGSO/Projekt/repo/blender/map_input.txt", printUnknown = False)
+# prepare buffer for a savefile
+output = FileBuffer("C:/zSchool/PPGSO/Projekt/repo/blender/map.txt")
+
+output.push("# CastleCall Object Map (by iairu)")
+output.push("# generated using bpy library and a script for custom syntax definition")
+output.push("# ---------------------------------------------------")
+output.push("# @scene (@X => unknown)")
+output.push("# id pos_x y z rot_x y z scale_x y z dim_x y z")
+
+# output sorting into scene groups
+smap = SceneMap()
+
+# modded objects modifier: these attributes are modified from their blender values:
+def modder(attr, bobj, path): # mod object attributes on creation, None return => don't create the given object
+    if (attr == "id"):
+        if not "/triangulated" in path:
+            return None # don't create objects outside "/triangulated"
+        return nmap.getId(NameMapUtils.cleanName(bobj.name)) # create id from cleaned blender object name
+    elif (attr == "sceneIds"):
+        path = path.split("/triangulated")[1]
+        return SceneMapUtils.extractSceneIds(path) # get scene ids from blender object name
+    elif (attr == "name"):
+        return NameMapUtils.cleanName(bobj.name) # keep cleaned blender object name
+
+# get the modded objects
+objs = ObjGrabber.grabObjects(bpy.context.scene.collection, modder)
+for o in objs:
+    # only add "triangulated" collection of objects (and don't mention it)
+    if isinstance(o, Obj):
 
         # normalize values to <-1;1>
         # no objects in blender can go beyond max_value, alternatively set to 1 for no normalization
@@ -185,11 +291,37 @@ for o in objs:
         # rotation seems to be in radians so there is no need for normalization as of right now
         o.normalize(max_pos=100, max_scale=100, max_dim=100, max_rot=1, precision=6) 
 
-        # output modified values into buffer which will be exported into a file
-        output.push(str(o))
+        # for objects with a different type than mesh/light, which will be handled differently
+        # comment them out using "#" (possible because id will be first in line) and add their full names
+        # these objects also shouldn't really have an id as of right now but include it just in case
+        if (o.type not in ["MESH", "LIGHT"]):
+            o.id = "# " + o.id + "_[" + o.name + "]"
+
+        # objects that weren't found in the map_input.txt, comment them out as well, and include their name for debugging
+        if (o.id == "X"):
+            o.id = "# " + o.id + "_[" + o.name + "]"
+
+        # append the object to every scene where it appears
+        for sceneId in o.sceneIds:
+            smap.appendBySceneId(sceneId, o)
+
+# sort the scenes
+scenes = smap.sort()
+
+# output modified values into buffer which will be exported into a file
+for scene in scenes:
+    sceneId = scene[0]
+    sceneObjs = scene[1]
+
+    output.push("\n@" + sceneId)
+    for obj in sceneObjs:
+        output.push(str(obj))
 
 # show what will get saved
-print(output)
+# print(output)
 
 # save to file
 output.export()
+
+# done
+print("Done.")
