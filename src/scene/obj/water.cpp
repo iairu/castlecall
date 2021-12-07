@@ -11,7 +11,7 @@ std::unique_ptr<ppgso::Shader> Water::shader;
 Water::Water() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "water.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "water_bezieranim.obj");
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "water.obj");
 }
 
 void Water::render(Scene &scene) {

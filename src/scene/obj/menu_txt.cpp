@@ -11,7 +11,7 @@ std::unique_ptr<ppgso::Shader> MenuTXT::shader;
 MenuTXT::MenuTXT() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "menu_logo.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "menu_text.obj");
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "menu_txt.obj");
 }
 
 void MenuTXT::render(Scene &scene) {

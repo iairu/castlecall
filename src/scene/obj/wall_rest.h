@@ -1,6 +1,6 @@
 
-#ifndef _GATEWALL_H
-#define _GATEWALL_H
+#ifndef _WALLREST_H
+#define _WALLREST_H
 
 
 #include <memory>
@@ -10,7 +10,9 @@
 #include "../scene.h"
 #include "../object.h"
 
-class Gatewall final : public Object {
+//#include "paths.h"
+
+class WallRest final : public Object {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
@@ -18,7 +20,7 @@ class Gatewall final : public Object {
         static std::unique_ptr<ppgso::Texture> texture;
 
     public:
-        Gatewall();
+        WallRest();
 
         void render(Scene &scene) override;
 

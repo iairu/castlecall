@@ -1,20 +1,20 @@
-#include "tower.h"
+#include "wall_gate.h"
 #include "paths.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
 
-std::unique_ptr<ppgso::Mesh> Tower::mesh;
-std::unique_ptr<ppgso::Texture> Tower::texture;
-std::unique_ptr<ppgso::Shader> Tower::shader;
+std::unique_ptr<ppgso::Mesh> WallGate::mesh;
+std::unique_ptr<ppgso::Texture> WallGate::texture;
+std::unique_ptr<ppgso::Shader> WallGate::shader;
 
-Tower::Tower() {
+WallGate::WallGate() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "tower_wall.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tower.obj");
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "wall_gate.obj");
 }
 
-void Tower::render(Scene &scene) {
+void WallGate::render(Scene &scene) {
 
     shader->use();
 

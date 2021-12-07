@@ -109,23 +109,22 @@ add_executable(main
     src/scene/scene.cpp
     src/scene/sceneWindow.cpp 
     src/scene/camera.cpp
-    src/scene/obj/tower.cpp
-    src/scene/obj/wall.cpp
-    src/scene/obj/ground_wild.cpp
+    src/scene/map.cpp
+    src/scene/obj/bridge.cpp
+    src/scene/obj/gate.cpp
     src/scene/obj/ground_castle.cpp
+    src/scene/obj/ground_wild.cpp
+    src/scene/obj/hall.cpp
+    src/scene/obj/high_tower.cpp
     src/scene/obj/menu_logo.cpp
     src/scene/obj/menu_txt.cpp
-    src/scene/obj/skybox.cpp
-    src/scene/obj/shroom.cpp
-    src/scene/obj/water.cpp
-    src/scene/obj/bridge.cpp
     src/scene/obj/rock.cpp
-    src/scene/obj/hall.cpp
-    src/scene/obj/gate.cpp
-    src/scene/obj/gatewall.cpp
-    src/scene/obj/high_tower.cpp
+    src/scene/obj/shroom.cpp
+    src/scene/obj/skybox.cpp
     src/scene/obj/stairs.cpp
-    src/scene/map.cpp
+    src/scene/obj/wall_gate.cpp
+    src/scene/obj/wall_rest.cpp
+    src/scene/obj/water.cpp
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)

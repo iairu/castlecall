@@ -1,6 +1,6 @@
 
-#ifndef _TOWER_H
-#define _TOWER_H
+#ifndef _WALLGATE_H
+#define _WALLGATE_H
 
 
 #include <memory>
@@ -10,9 +10,7 @@
 #include "../scene.h"
 #include "../object.h"
 
-//#include "paths.h"
-
-class Tower final : public Object {
+class WallGate final : public Object {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
@@ -20,7 +18,7 @@ class Tower final : public Object {
         static std::unique_ptr<ppgso::Texture> texture;
 
     public:
-        Tower();
+        WallGate();
 
         void render(Scene &scene) override;
 

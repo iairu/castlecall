@@ -5,7 +5,6 @@
 #include <fstream>
 
 #include "map.h"
-#include "obj/tower.h"
 #include "obj/shroom.h"
 #include "obj/ground_wild.h"
 #include "obj/ground_castle.h"
@@ -19,14 +18,11 @@
 #include "obj/high_tower.h"
 #include "obj/stairs.h"
 #include "obj/gate.h"
-#include "obj/gatewall.h"
-#include "obj/wall.h"
+#include "obj/wall_gate.h"
+#include "obj/wall_rest.h"
 
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
     switch (tgt_obj) {
-        case WALL:
-            return std::make_unique<Wall>();
-            break;
         case SKYBOX:
             return std::make_unique<Skybox>();
             break;
@@ -54,8 +50,8 @@ std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
         case BRIDGE:
             return std::make_unique<Bridge>();
             break;
-        case TOWER:
-            return std::make_unique<Tower>();
+        case WALL_REST:
+            return std::make_unique<WallRest>();
             break;
         case HALL:
             return std::make_unique<Hall>();
@@ -69,8 +65,8 @@ std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
         case GATE:
             return std::make_unique<Gate>();
             break;
-        case GATEWALL:
-            return std::make_unique<Gatewall>();
+        case WALL_GATE:
+            return std::make_unique<WallGate>();
             break;
         default:
             break;

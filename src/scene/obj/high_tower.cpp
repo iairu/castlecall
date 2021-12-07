@@ -11,7 +11,7 @@ std::unique_ptr<ppgso::Shader> HighTower::shader;
 HighTower::HighTower() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "hightower.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "hightower.obj");
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "high_tower.obj");
 }
 
 void HighTower::render(Scene &scene) {

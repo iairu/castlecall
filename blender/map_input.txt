@@ -8,22 +8,21 @@
 # id can be anything not just numbers, but it should be a number (because later cpp usage implementation)
 # names can be anything not just numbers, but they must be unique
 # hash-lines are comments
+# must match map.h ITMTYPE
 
-0 wall
-1 sun
-2 skybox
-3 ground_wild
-4 shroom
-5 water
-6 menu_logo
-7 menu_text
-8 rock
-9 ground_castle
-10 castle
-11 wall_gate
-12 wall_rest
-13 bridge
-14 hall
-15 hightower
-16 stairs
-17 gate
+0 light
+1 skybox
+2 ground_wild
+3 shroom
+4 water
+5 menu_logo
+6 menu_txt
+7 rock
+8 ground_castle
+9 gate
+10 wall_gate
+11 wall_rest
+12 bridge
+13 hall
+14 high_tower
+15 stairs

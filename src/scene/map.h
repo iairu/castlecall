@@ -13,24 +13,23 @@
 #include "scene.h"
 #include "object.h"
 
-typedef enum _ITMTYPE {
-    WALL,
-    LIGHT,
-    SKYBOX,
-    GROUND_WILD,
-    SHROOM,
-    WATER,
-    MENU_LOGO,
-    MENU_TXT,
-    ROCK,
-    GROUND_CASTLE,
-    GATE,
-    GATEWALL,
-    TOWER,
-    BRIDGE,
-    HALL,
-    HIGH_TOWER,
-    STAIRS
+typedef enum _ITMTYPE { // must match map_input.txt numbers
+    LIGHT, // 0
+    SKYBOX, // 1
+    GROUND_WILD, // 2
+    SHROOM, // 3
+    WATER, // 4
+    MENU_LOGO, // 5
+    MENU_TXT, // 6
+    ROCK, // 7
+    GROUND_CASTLE, // 8
+    GATE, // 9
+    WALL_GATE, // 10
+    WALL_REST, // 11
+    BRIDGE, // 12
+    HALL, // 13
+    HIGH_TOWER, // 14
+    STAIRS // 15
 } ITMTYPE;
 
 typedef struct _MAPITEM {

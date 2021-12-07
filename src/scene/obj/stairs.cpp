@@ -11,7 +11,7 @@ std::unique_ptr<ppgso::Shader> Stairs::shader;
 Stairs::Stairs() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "hightower.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "hightower_stairs.obj");
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "stairs.obj");
 }
 
 void Stairs::render(Scene &scene) {
