@@ -19,7 +19,7 @@
 # 7 menu txt
 # 8 rock
 # 9 ground_castle
-# 10 castle
+# 10 gate
 # 11 gatewall
 # 12 tower
 # 13 bridge
