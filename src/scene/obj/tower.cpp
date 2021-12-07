@@ -1,4 +1,5 @@
 #include "tower.h"
+#include "paths.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
@@ -9,8 +10,8 @@ std::unique_ptr<ppgso::Shader> Tower::shader;
 
 Tower::Tower() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP("../data/bmp/tower_wall.bmp"));
-    if (!mesh) mesh = std::make_unique<ppgso::Mesh>("../data/tower.obj");
+    if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "tower_wall.bmp"));
+    if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tower.obj");
 }
 
 void Tower::render(Scene &scene) {
