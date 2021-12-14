@@ -22,6 +22,7 @@ class Scene {
         glm::vec3 lightDirection{-1.0f, 1.0f, -1.0f}; // default, make dynamic later...
 
         // Keyboard state (map)
+        std::map< int, int > keyboard;
 
         // Cursor state (struct)
 };

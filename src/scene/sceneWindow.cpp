@@ -43,6 +43,8 @@ private:
 
 public:
     SceneWindow() : ppgso::Window{"CastleCall", 1280, 720} {
+        // glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+
         // Initialize OpenGL state
         // Enable Z-buffer
         glEnable(GL_DEPTH_TEST); // <-- make opengl work
@@ -54,6 +56,11 @@ public:
         glCullFace(GL_BACK);
 
         initScene();
+    }
+
+    // Handles pressed key when the window is focused
+    void onKey(int key, int scanCode, int action, int mods) {
+        scene.keyboard[key] = action;
     }
 
     // void onIdle() override {

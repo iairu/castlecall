@@ -4,6 +4,9 @@
 #include "ppgso.h"
 #include <glm/glm.hpp>
 
+// Forward declare a scene
+class Scene;
+
 class Camera {
 public:
     glm::vec3 up{0,1,0};
@@ -15,7 +18,7 @@ public:
 
     Camera(float fow = 45.0f, float ratio = 1.0f, float near = 0.1f, float far = 10.0f);
 
-    void update();
+    void update(Scene &scene, float dt);
 
     // Get direction vector in world coordinates through camera projection plane
     glm::vec3 cast(double u, double v);
