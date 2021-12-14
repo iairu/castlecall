@@ -36,7 +36,7 @@ endif ()
 # Warnings for Debug mode
 option(USE_STRICT_COMPILE_WARNINGS "Use strict compilation warnings in debug mode." ON)
 # These compile flags should apply for GCC and Clang compilers
-set(STRICT_COMPILE_FLAGS "-Wpedantic -Wall -Wno-c++98-compat -Wextra -Wconversion -Wsign-compare -Wuninitialized -Wno-unused-parameter")
+set(STRICT_COMPILE_FLAGS "-Wpedantic -Wall -Wno-c++98-compat -Wextra -Wconversion -Wsign-compare -Wuninitialized -Wno-unused-parameter -Wfloat-conversion")
 if (USE_STRICT_COMPILE_WARNINGS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${STRICT_COMPILE_FLAGS}")
 endif ()
@@ -125,6 +125,7 @@ add_executable(main
     src/scene/obj/wall_gate.cpp
     src/scene/obj/wall_rest.cpp
     src/scene/obj/water.cpp
+    src/scene/obj/hierarchical_tree.cpp
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)
