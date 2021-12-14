@@ -289,7 +289,7 @@ for o in objs:
         # dim appears to be scale normalized to meters (which means either it or scale may be completely useless)
         # some objects (ground_wild) have negative scale because they've been rescaled into inverted position instead of rotation, let's see what happens
         # rotation seems to be in radians so there is no need for normalization as of right now
-        o.normalize(max_pos=100, max_scale=100, max_dim=100, max_rot=1, precision=6) 
+        o.normalize(max_pos=1, max_scale=1, max_dim=1, max_rot=1, precision=6) 
 
         # for objects with a different type than mesh/light, which will be handled differently
         # comment them out using "#" (possible because id will be first in line) and add their full names
