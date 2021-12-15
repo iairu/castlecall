@@ -57,6 +57,7 @@ namespace ppgso {
      * @param value - Value to set input to.
      */
     void setUniform(const std::string &name, float value) const;
+    void setUniformInt(const std::string &name, int value) const;
 
     /*!
      * Set a vector as an input for the shader program variable "name"
