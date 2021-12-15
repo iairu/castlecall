@@ -124,25 +124,26 @@ Map::Map() {
 }
 
 void Map::placeObj(MAPITEM item, Scene *scene) {
-    std::unique_ptr<Camera> camera;
     switch (item.object) {
         case CAMERA:
             if(scene->camera == NULL) {
-                camera = Scripting::createScriptedCamera(item.pos, item.rotation);
-                scene->camera = move(camera);
+                scene->camera = move(Scripting::createScriptedCamera(item.pos, item.rotation));
             }
             else {
                 scene->camera->position = item.pos;
                 scene->camera->back = item.rotation;
             }
+            break;
         case WATER:
             scene->objects.push_back(move(std::make_unique<Water>()));
+            break;
         case NATURE_GEN:
             NatureGen::placeTrees(scene, item.pos, item.scale);
+            break;
         default:
             break;
     }
-} // TODO: add support for nature generator & characters
+} // TODO: add support for characters
 
 void Map::placeItems(unsigned int scene_id, Scene *scene) {
     if(this->scenes.empty() || this->scenes.size() < scene_id) {
