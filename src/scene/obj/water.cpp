@@ -1,8 +1,6 @@
 #include "water.h"
 #include "paths.h"
 
-#include <shaders/diffuse_vert_glsl.h>
-#include <shaders/diffuse_frag_glsl.h>
 #include <shaders/texture_frag_glsl.h>
 #include <shaders/texture_vert_glsl.h>
 
