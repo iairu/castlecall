@@ -126,6 +126,7 @@ add_executable(main
     src/scene/obj/wall_rest.cpp
     src/scene/obj/water.cpp
     src/scene/obj/hierarchical_tree.cpp
+    src/scene/scripting.cpp
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)

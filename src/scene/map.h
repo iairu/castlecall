@@ -12,6 +12,7 @@
 
 #include "scene.h"
 #include "object.h"
+#include "scripting.h"
 
 typedef enum _ITMTYPE { // must match map_input.txt numbers
     LIGHT, // 0
@@ -29,7 +30,8 @@ typedef enum _ITMTYPE { // must match map_input.txt numbers
     BRIDGE, // 12
     HALL, // 13
     HIGH_TOWER, // 14
-    STAIRS // 15
+    STAIRS, // 15
+    CAMERA // 16
 } ITMTYPE;
 
 typedef struct _MAPITEM {
@@ -50,6 +52,8 @@ class Map {
         std::vector<SCENE_DESC> scenes;
 
         std::unique_ptr<Object> getObj(ITMTYPE tgt_obj);
+
+        void placeObj(MAPITEM item, Scene *scene);
 
     public:
         Map();
