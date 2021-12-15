@@ -58,7 +58,7 @@ glm::vec3 Scene::calculateLightDirection(glm::vec3 object_pos) {
     if( ! this->hasLightSource ) return this->lightDirection;
     glm::vec3 result = object_pos - this->light_source;
     float div = (abs(result.x) > abs(result.y)) ? ((abs(result.x) > abs(result.z)) ? abs(result.x) : abs(result.z)) : ((abs(result.y) > abs(result.z)) ? abs(result.y) : abs(result.z));
-    if ( div < 0 ) div = 1.0f;
+    if ( div <= 0 ) div = 1.0f;
     result *= -1;
     return glm::vec3(result.x / div, result.y / div, result.z / div); // return normalized light dir
 }
