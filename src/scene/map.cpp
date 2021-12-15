@@ -172,4 +172,7 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
     htree2->scale = {0.25, 0.25, 0.25}; // scale to 1/4 size
     htree2->rotation = {0, 0, 3.14}; // last one rotates around up-down axis ( in radians -> 3.14 = 180* rotation )
     scene->objects.push_back(move(htree2));
+
+    auto water = std::make_unique<Water>();
+    scene->objects.push_back(move(water));
 }
