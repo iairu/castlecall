@@ -67,7 +67,10 @@ set(PPGSO_SHADER_SRC
         shader/convolution_vert.glsl shader/convolution_frag.glsl
         shader/diffuse_vert.glsl shader/diffuse_frag.glsl
         shader/texture_vert.glsl shader/texture_frag.glsl
-        shader/screen_vert.glsl shader/screen_frag.glsl
+        shader/screen_bright_vert.glsl shader/screen_bright_frag.glsl
+        shader/screen_blur_vert.glsl shader/screen_blur_frag.glsl
+        shader/screen_pass_vert.glsl shader/screen_pass_frag.glsl
+        shader/screen_blend_vert.glsl shader/screen_blend_frag.glsl
         )
 add_resources(shaders ${PPGSO_SHADER_SRC})
 
