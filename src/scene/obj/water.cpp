@@ -1,8 +1,6 @@
 #include "water.h"
 #include "paths.h"
 
-#include <shaders/diffuse_vert_glsl.h>
-#include <shaders/diffuse_frag_glsl.h>
 #include <shaders/texture_frag_glsl.h>
 #include <shaders/texture_vert_glsl.h>
 
@@ -195,7 +193,7 @@ void Water::render(Scene &scene) {
     shader->use();
 
     // Set up light
-    shader->setUniform("LightDirection", scene.lightDirection);
+    shader->setUniform("LightDirection", scene.calculateLightDirection(position));
     shader->setUniform("Transparency", 0.25f);
 
     // use camera

@@ -34,7 +34,7 @@ void Trunk::render(Scene &scene) {
     shader->use();
 
     // Set up light
-    shader->setUniform("LightDirection", scene.lightDirection);
+    shader->setUniform("LightDirection", scene.calculateLightDirection(position));
 
     // use camera
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
@@ -49,7 +49,7 @@ void Leaves::render(Scene &scene) {
     shader->use();
 
     // Set up light
-    shader->setUniform("LightDirection", scene.lightDirection);
+    shader->setUniform("LightDirection", scene.calculateLightDirection(position));
 
     // use camera
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
@@ -64,7 +64,7 @@ void Ground::render(Scene &scene) {
     shader->use();
 
     // Set up light
-    shader->setUniform("LightDirection", scene.lightDirection);
+    shader->setUniform("LightDirection", scene.calculateLightDirection(position));
 
     // use camera
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
