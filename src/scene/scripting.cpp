@@ -17,6 +17,7 @@ std::unique_ptr<Camera> Scripting::createScriptedCamera(glm::vec3 pos, glm::vec3
     std::vector<MOVE> keyframe10 = {{0.0, 7000.0, glm::vec3(3.31,0.59,-2.34), glm::vec3(1.66,-1.02,-22.81)}};
     std::vector<MOVE> keyframe11 = {{0.0, 3000.0, glm::vec3(3.31,0.59,-2.34), glm::vec3(-26.53,-0.06,-23.27)}};
     std::vector<MOVE> keyframe12 = {{0.0, 3000.0, glm::vec3(7.08,0.8,-0.14), glm::vec3(-91.94,17.75,-24.11)}};
+    std::vector<MOVE> keyframe13 = {{0.0, 3000.0, glm::vec3(7.76,0.67,5.26), glm::vec3(-91.94,58.21,-22.98)}};
 
     auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
     camera->position = pos;
@@ -34,6 +35,7 @@ std::unique_ptr<Camera> Scripting::createScriptedCamera(glm::vec3 pos, glm::vec3
     camera->addKeyframe(&keyframe10);
     camera->addKeyframe(&keyframe11);
     camera->addKeyframe(&keyframe12);
+    camera->addKeyframe(&keyframe13);
 
     return camera;
 }
