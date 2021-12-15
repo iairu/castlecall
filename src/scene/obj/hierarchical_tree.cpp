@@ -126,13 +126,13 @@ bool Tree::parent_update(glm::mat4 parentModelMatrix) {
 }
 
 void Tree::render(Scene &scene) {
-    // if (scene.keyboard[GLFW_KEY_I]) {
-    //     leaves2->position.x -= 0.01;
-    //     printf(" %.2f ", leaves2->position.x);
-    // } else if (scene.keyboard[GLFW_KEY_K]) {
-    //     leaves2->position.x += 0.01;
-    //     printf(" %.2f ", leaves2->position.x);
-    // }
+    /*if (scene.keyboard[GLFW_KEY_I]) {
+        leaves2->position.y -= 0.01;
+        printf(" %.2f \n", leaves2->position.y);
+    } else if (scene.keyboard[GLFW_KEY_K]) {
+        leaves2->position.y += 0.01;
+        printf(" %.2f \n", leaves2->position.y);
+    }*/
 
     // Render hierarchy
     trunk->render(scene);
@@ -160,13 +160,13 @@ bool HierarchicalTree::update(Scene &scene, float dt) {
 }
 
 void HierarchicalTree::render(Scene &scene) {
-    // if (scene.keyboard[GLFW_KEY_U]) {
-    //     tree->position.x -= 0.01;
-    //     printf(" %.2f ", tree->position.x);
-    // } else if (scene.keyboard[GLFW_KEY_J]) {
-    //     tree->position.x += 0.01;
-    //     printf(" %.2f ", tree->position.x);
-    // }
+    if (scene.keyboard[GLFW_KEY_U]) {
+        tree->position.y -= 0.05;
+        printf(" %.2f \n", tree->position.y);
+    } else if (scene.keyboard[GLFW_KEY_J]) {
+        tree->position.y += 0.05;
+        printf(" %.2f \n", tree->position.y);
+    }
     // if (scene.keyboard[GLFW_KEY_O]) {
     //     tree->rotation.z -= 0.01;
     //     printf(" %.2f ", tree->rotation.z);

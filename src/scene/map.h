@@ -30,7 +30,8 @@ typedef enum _ITMTYPE { // must match map_input.txt numbers
     HALL, // 13
     HIGH_TOWER, // 14
     STAIRS, // 15
-    CAMERA // 16
+    CAMERA, // 16
+    NATURE_GEN // 17
 } ITMTYPE;
 
 typedef struct _MAPITEM {
