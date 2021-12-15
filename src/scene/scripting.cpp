@@ -4,7 +4,7 @@
 
 std::unique_ptr<Camera> Scripting::createScriptedCamera(glm::vec3 pos, glm::vec3 rot) {
 
-    std::vector<MOVE> script = {{0.0, 2000.0, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)}};
+    std::vector<MOVE> script = {{0.0, 2000.0, glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)}};
 
 
 
