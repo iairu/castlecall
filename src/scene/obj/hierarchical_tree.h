@@ -9,7 +9,7 @@
 #include "../scene.h"
 #include "../object.h"
 
-class Trunk final : private Object {
+class Trunk final : public Object {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
@@ -19,15 +19,14 @@ class Trunk final : private Object {
     public:
         Trunk();
 
+        bool parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix);
+
         void render(Scene &scene) override;
-        bool update(Scene &scene, float dt) override {
-            generateModelMatrix();
-            return true;
-        }
+        bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
 
-class Leaves final : private Object {
+class Leaves final : public Object {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
@@ -37,15 +36,14 @@ class Leaves final : private Object {
     public:
         Leaves();
 
+        bool parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix);
+
         void render(Scene &scene) override;
-        bool update(Scene &scene, float dt) override {
-            generateModelMatrix();
-            return true;
-        }
+        bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
 
-class Ground final : private Object {
+class Ground final : public Object {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
@@ -55,25 +53,27 @@ class Ground final : private Object {
     public:
         Ground();
 
+        bool parent_update(glm::mat4 parentModelMatrix);
+
         void render(Scene &scene) override;
-        bool update(Scene &scene, float dt) override {
-            generateModelMatrix();
-            return true;
-        }
+        bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
 
-class Tree final : private Object {
+class Tree final : public Object {
     private:
         // Hierarchy of objects
         std::unique_ptr<Trunk> trunk;
         std::unique_ptr<Leaves> leaves;
+        std::unique_ptr<Leaves> leaves2;
 
     public:
         Tree();
 
+        bool parent_update(glm::mat4 parentModelMatrix);
+
         void render(Scene &scene) override;
-        bool update(Scene &scene, float dt) override;
+        bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
 

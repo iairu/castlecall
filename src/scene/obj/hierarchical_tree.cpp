@@ -30,7 +30,6 @@ Ground::Ground() {
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tree_ground.obj");
 }
 
-// todo: these may not need a shader directly? because they will be transformed later
 void Trunk::render(Scene &scene) {
     shader->use();
 
@@ -77,25 +76,68 @@ void Ground::render(Scene &scene) {
     mesh->render();
 }
 
+bool Trunk::parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix) {
+    generateModelMatrix();
+    glm::mat4 ownModelMatrix{1};
+    ownModelMatrix *= modelMatrix;
+    modelMatrix = parentParentModelMatrix;
+    modelMatrix *= parentModelMatrix;
+    modelMatrix *= ownModelMatrix;
+    return true;
+}
+bool Leaves::parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix) {
+    generateModelMatrix();
+    glm::mat4 ownModelMatrix{1};
+    ownModelMatrix *= modelMatrix;
+    modelMatrix = parentParentModelMatrix;
+    modelMatrix *= parentModelMatrix;
+    modelMatrix *= ownModelMatrix;
+    return true;
+}
+bool Ground::parent_update(glm::mat4 parentModelMatrix) {
+    generateModelMatrix();
+    glm::mat4 ownModelMatrix{1};
+    ownModelMatrix *= modelMatrix;
+    modelMatrix = parentModelMatrix;
+    modelMatrix *= ownModelMatrix;
+    return true;
+}
+
 
 Tree::Tree() {
     trunk = std::make_unique<Trunk>();
     leaves = std::make_unique<Leaves>();
+    leaves2 = std::make_unique<Leaves>();
     // todo assign transformations to trunk
     // todo assign transformations to leaves
+    leaves2->position = {-0.67,0,0};
+    leaves2->rotation = {0,0,3.14};
 }
 
-bool Tree::update(Scene &scene, float dt) {
+bool Tree::parent_update(glm::mat4 parentModelMatrix) {
+    generateModelMatrix();
+
     // Update hierarchy
-    trunk->update(scene, dt);
-    leaves->update(scene, dt);
+    trunk->parent_update(modelMatrix, parentModelMatrix);
+    leaves->parent_update(modelMatrix, parentModelMatrix);
+    leaves2->parent_update(modelMatrix, parentModelMatrix);
+
     return true;
 }
 
 void Tree::render(Scene &scene) {
+    // if (scene.keyboard[GLFW_KEY_I]) {
+    //     leaves2->position.x -= 0.01;
+    //     printf(" %.2f ", leaves2->position.x);
+    // } else if (scene.keyboard[GLFW_KEY_K]) {
+    //     leaves2->position.x += 0.01;
+    //     printf(" %.2f ", leaves2->position.x);
+    // }
+
     // Render hierarchy
     trunk->render(scene);
     leaves->render(scene);
+    leaves2->render(scene);
 }
 
 HierarchicalTree::HierarchicalTree() {
@@ -103,18 +145,41 @@ HierarchicalTree::HierarchicalTree() {
     ground = std::make_unique<Ground>();
     // todo assign transformations to tree
     // todo assign transformations to ground
+    tree->position = {0,0,0};
+    ground->position = {1,0,0};
 }
 
 bool HierarchicalTree::update(Scene &scene, float dt) {
+    generateModelMatrix();
+
     // Update hierarchy
-    tree->update(scene, dt);
-    ground->update(scene, dt);
+    tree->parent_update(modelMatrix);
+    ground->parent_update(modelMatrix);
+
     return true;
 }
 
 void HierarchicalTree::render(Scene &scene) {
+    // if (scene.keyboard[GLFW_KEY_U]) {
+    //     tree->position.x -= 0.01;
+    //     printf(" %.2f ", tree->position.x);
+    // } else if (scene.keyboard[GLFW_KEY_J]) {
+    //     tree->position.x += 0.01;
+    //     printf(" %.2f ", tree->position.x);
+    // }
+    // if (scene.keyboard[GLFW_KEY_O]) {
+    //     tree->rotation.z -= 0.01;
+    //     printf(" %.2f ", tree->rotation.z);
+    // } else if (scene.keyboard[GLFW_KEY_L]) {
+    //     tree->rotation.z += 0.01;
+    //     printf(" %.2f ", tree->rotation.z);
+    // }
+
+    // if (scene.keyboard[GLFW_KEY_0]) {
+    //     position.x -= 0.01;
+    //     printf(" %.2f ", rotation.z);
+    // }
     // Render hierarchy
     tree->render(scene);
     ground->render(scene);
 }
-

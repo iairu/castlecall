@@ -21,6 +21,8 @@
 #include "obj/wall_gate.h"
 #include "obj/wall_rest.h"
 
+#include "obj/hierarchical_tree.h"
+
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
     switch (tgt_obj) {
         case SKYBOX:
@@ -138,4 +140,16 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
         obj->rotation = mapitem.rotation;
         scene->objects.push_back(move(obj));
     }
+
+    auto htree = std::make_unique<HierarchicalTree>();
+    htree->position = {0, -0.75, 0}; // second one moves up-down
+    htree->scale = {0.25, 0.25, 0.25}; // scale to 1/4 size
+    htree->rotation = {0, 0, 0}; // last one rotates around up-down axis ( in radians )
+    scene->objects.push_back(move(htree));
+
+    auto htree2 = std::make_unique<HierarchicalTree>();
+    htree2->position = {2, -0.75, 0}; // second one moves up-down
+    htree2->scale = {0.25, 0.25, 0.25}; // scale to 1/4 size
+    htree2->rotation = {0, 0, 3.14}; // last one rotates around up-down axis ( in radians -> 3.14 = 180* rotation )
+    scene->objects.push_back(move(htree2));
 }
