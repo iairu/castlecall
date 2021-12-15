@@ -23,6 +23,8 @@
 
 #include "obj/hierarchical_tree.h"
 
+#include "nature_gen.h"
+
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
     switch (tgt_obj) {
         case SKYBOX:
@@ -45,9 +47,6 @@ std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
             break;
         case ROCK:
             return std::make_unique<Rock>();
-            break;
-        case WATER:
-            return std::make_unique<Water>();
             break;
         case BRIDGE:
             return std::make_unique<Bridge>();
@@ -125,21 +124,29 @@ Map::Map() {
 }
 
 void Map::placeObj(MAPITEM item, Scene *scene) {
-    std::unique_ptr<Camera> camera;
     switch (item.object) {
         case CAMERA:
             if(scene->camera == NULL) {
-                camera = Scripting::createScriptedCamera(item.pos, item.rotation);
-                scene->camera = move(camera);
+                scene->camera = move(Scripting::createScriptedCamera(item.pos, item.rotation));
             }
             else {
                 scene->camera->position = item.pos;
                 scene->camera->back = item.rotation;
             }
+            break;
+        case WATER:
+            scene->objects.push_back(move(std::make_unique<Water>()));
+            break;
+        case NATURE_GEN:
+            NatureGen::placeTrees(scene, item.pos, item.scale);
+            break;
+        case LIGHT:
+            
+            break;
         default:
             break;
     }
-} // TODO: add support for nature generator & characters
+} // TODO: add support for characters
 
 void Map::placeItems(unsigned int scene_id, Scene *scene) {
     if(this->scenes.empty() || this->scenes.size() < scene_id) {
@@ -160,19 +167,4 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
         obj->rotation = mapitem.rotation;
         scene->objects.push_back(move(obj));
     }
-
-    auto htree = std::make_unique<HierarchicalTree>();
-    htree->position = {0, -0.75, 0}; // second one moves up-down
-    htree->scale = {0.25, 0.25, 0.25}; // scale to 1/4 size
-    htree->rotation = {0, 0, 0}; // last one rotates around up-down axis ( in radians )
-    scene->objects.push_back(move(htree));
-
-    auto htree2 = std::make_unique<HierarchicalTree>();
-    htree2->position = {2, -0.75, 0}; // second one moves up-down
-    htree2->scale = {0.25, 0.25, 0.25}; // scale to 1/4 size
-    htree2->rotation = {0, 0, 3.14}; // last one rotates around up-down axis ( in radians -> 3.14 = 180* rotation )
-    scene->objects.push_back(move(htree2));
-
-    auto water = std::make_unique<Water>();
-    scene->objects.push_back(move(water));
 }

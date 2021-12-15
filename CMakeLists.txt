@@ -131,6 +131,7 @@ add_executable(main
     src/scene/obj/water.cpp
     src/scene/obj/hierarchical_tree.cpp
     src/scene/scripting.cpp
+    src/scene/nature_gen.cpp
     src/main.cpp)
 target_link_libraries(main ppgso shaders)
 install (TARGETS main DESTINATION .)

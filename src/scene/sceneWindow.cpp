@@ -62,6 +62,8 @@ private:
 
         this->map = new Map;
         this->map->placeItems(1, &scene);
+        this->map->placeItems(2, &scene);
+        this->map->placeItems(3, &scene);
 
         // ADD OBJECTS HERE
 
