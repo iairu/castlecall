@@ -124,6 +124,23 @@ Map::Map() {
 	else std::cout << "Failed to open map" << std::endl;
 }
 
+void Map::placeObj(MAPITEM item, Scene *scene) {
+    std::unique_ptr<Camera> camera;
+    switch (item.object) {
+        case CAMERA:
+            if(scene->camera == NULL) {
+                camera = Scripting::createScriptedCamera(item.pos, item.rotation);
+                scene->camera = move(camera);
+            }
+            else {
+                scene->camera->position = item.pos;
+                scene->camera->back = item.rotation;
+            }
+        default:
+            break;
+    }
+} // TODO: add support for nature generator & characters
+
 void Map::placeItems(unsigned int scene_id, Scene *scene) {
     if(this->scenes.empty() || this->scenes.size() < scene_id) {
         std::cout << "invalid scene id: " << scene_id << std::endl;
@@ -134,7 +151,10 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
 
     for ( auto mapitem : *map) {
         auto obj = Map::getObj(mapitem.object);
-        if (obj == NULL) continue;
+        if (obj == NULL) {
+            Map::placeObj(mapitem, scene);
+            continue;
+        }
         obj->scale = mapitem.scale;
         obj->position = mapitem.pos;
         obj->rotation = mapitem.rotation;

@@ -20,14 +20,11 @@ private:
 
     void initScene() {
         scene.objects.clear();
-        
-        // Create a camera
-        auto camera = std::make_unique<Camera>(60.0f, 1.0f, 0.1f, 100.0f);
-        camera->position.z = -2.0f;
-        scene.camera = move(camera);
+
+        scene.camera = NULL;
 
         this->map = new Map;
-        this->map->placeItems(2, &scene);
+        this->map->placeItems(1, &scene);
 
         // ADD OBJECTS HERE
 
