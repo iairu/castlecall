@@ -86,7 +86,6 @@ void Camera::runScript(float dt) {
     if(this->camera_script.empty()) return;
     float remainder = 0;
     float * src = &dt;
-    float coef = 0;
 
     PMOVE current = &this->camera_script.at(0);
     do {
@@ -109,12 +108,10 @@ void Camera::runScript(float dt) {
                 percentage = dt / current->duration;
                 current->duration -= *src;
                 if(current->duration < 0) {
-                    coef = current->duration -= *src;
                     remainder = -current->duration;
                     percentage = 1.0; // finish transition
                 }
                 else {
-                    coef = *src;
                     remainder = 0;
                 }
 
