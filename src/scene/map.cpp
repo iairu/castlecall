@@ -141,7 +141,8 @@ void Map::placeObj(MAPITEM item, Scene *scene) {
             NatureGen::placeTrees(scene, item.pos, item.scale);
             break;
         case LIGHT:
-            
+            scene->light_source = item.pos;
+            scene->hasLightSource = true;
             break;
         default:
             break;
