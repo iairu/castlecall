@@ -23,8 +23,8 @@ void NatureGen::placeTrees(Scene *scene, glm::vec3 pos, glm::vec3 size) {
     scene->objects.push_back(move(htree));
     
     if((size.x > 1.9 || size.z > 1.9 ) && ((x_off < 30 || z_off < 30) || (x_off > 70 || z_off > 70))) {
-        x_off = 100 - x_off;
-        z_off = 100 - z_off;
+        x_off = (size.x * 2) - x_off;
+        z_off = (size.z * 2) - z_off;
 
         htree = std::make_unique<HierarchicalTree>();
         
