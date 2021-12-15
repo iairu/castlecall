@@ -20,43 +20,62 @@ void Camera::update(Scene &scene, float dt) {
         // Keyboard controls
         if(scene.keyboard[GLFW_KEY_LEFT]) {
             position.x += 0.01; // lavo X
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_RIGHT]) {
             position.x -= 0.01; // pravo -X
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_UP]) {
             position.z += 0.01; // rovno Z
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_DOWN]) {
             position.z -= 0.01; // dozadu -Z
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_KP_1]) {
             position.y += 0.01; // hore Y
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_KP_2]) {
             position.y -= 0.01; // dole -Y
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
+
 
         } else if(scene.keyboard[GLFW_KEY_Q]) {
             up.x += 0.01; // hojdacka (naklon lietadla)
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_W]) {
             up.x -= 0.01; // hojdacka (naklon lietadla)
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_E]) {
-             up.z += 0.01;
+            up.z += 0.01;
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_R]) {
             up.z -= 0.01;
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_T]) {
             up.y += 0.01;
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_Z]) {
              up.y -= 0.01;
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
 
         // velmi blba rotacia
         } else if(scene.keyboard[GLFW_KEY_A]) {
             back.x += 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_S]) {
             back.x -= 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_D]) {
             back.z += 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_F]) {
             back.z -= 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_G]) {
             back.y += 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_H]) {
             back.y -= 0.01;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } 
 
         // TODO: movement control based on rotation
@@ -67,16 +86,30 @@ void Camera::update(Scene &scene, float dt) {
             position = {0,0,0};
             back = {0,0,-1};
         }
-
-        else if(scene.keyboard[GLFW_KEY_L]) { // log position into console
-            std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
+        else if(scene.keyboard[GLFW_KEY_L]) {
+            std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
+            std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
+            std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         }
     }
     viewMatrix = lookAt(position, position-back, up);
 }
 
-void Camera::setScript(std::vector<MOVE> * script) {
-    for(MOVE move : *script) {
+// void Camera::setScript() {
+//     for(std::vector<MOVE> keyframe : this->keyframes) {
+//         for(MOVE move : keyframe) {
+//             this->camera_script.push_back(move);
+//         }
+//     }
+//     this->locked = true;
+// }
+
+// void Camera::addKeyframe(std::vector<MOVE> *keyframe) {
+//     this->keyframes.push_back(*keyframe);
+// }
+
+void Camera::addKeyframe(std::vector<MOVE> *keyframe) {
+    for(MOVE move : *keyframe) {
         this->camera_script.push_back(move);
     }
     this->locked = true;

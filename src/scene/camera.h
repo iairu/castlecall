@@ -11,6 +11,7 @@ class Scene;
 
 class Camera {
     private:
+        std::vector<std::vector<MOVE>> keyframes;
         std::vector<MOVE> camera_script;
 
         bool locked;
@@ -31,7 +32,8 @@ public:
 
     void update(Scene &scene, float dt);
 
-    void setScript(std::vector<MOVE> * script);
+    void addKeyframe(std::vector<MOVE> * keyframe);
+    // void setScript();
 
     // Get direction vector in world coordinates through camera projection plane
     glm::vec3 cast(double u, double v);
