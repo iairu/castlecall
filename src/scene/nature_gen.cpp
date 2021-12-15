@@ -22,7 +22,7 @@ void NatureGen::placeTrees(Scene *scene, glm::vec3 pos, glm::vec3 size) {
     htree->rotation = {0, 0, 0}; // last one rotates around up-down axis ( in radians )
     scene->objects.push_back(move(htree));
     
-    if((size.x > 1.9 || size.z > 1.9 ) && ((x_off < 30 || z_off < 30) || (x_off > 70 || z_off > 70))) {
+    if((size.x > 1.9 || size.z > 1.9 ) && ((x_off < 30 && z_off < 30) || (x_off < 30 && z_off > 70) || (x_off > 70 && z_off < 30) || (x_off > 70 && z_off > 70))) {
         x_off = (size.x * 2) - x_off;
         z_off = (size.z * 2) - z_off;
 
