@@ -140,6 +140,9 @@ void Map::placeObj(MAPITEM item, Scene *scene) {
         case NATURE_GEN:
             NatureGen::placeTrees(scene, item.pos, item.scale);
             break;
+        case LIGHT:
+            
+            break;
         default:
             break;
     }
