@@ -139,8 +139,6 @@ void Map::placeObj(MAPITEM item, Scene *scene) {
             break;
         case NATURE_GEN:
             NatureGen::placeTrees(scene, item.pos, item.scale);
-            NatureGen::placeTrees(scene, glm::vec3{item.pos.x - 9, item.pos.y - 3, item.pos.z}, item.scale);
-            NatureGen::placeTrees(scene, glm::vec3{item.pos.x - 6, item.pos.y, item.pos.z}, item.scale);
             break;
         case LIGHT:
             scene->light_source = item.pos;
