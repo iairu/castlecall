@@ -237,18 +237,19 @@ public:
         // colorbuffer_blur[0] contains blurred brightness filter
 
         // Default framebuffer
-        useFramebuffer(0);
+        useFramebuffer(0); 
 
-        post_shader_blend->use();
-        post_shader_blend->setUniformInt("scene", 0);
-        post_shader_blend->setUniformInt("bloomBlur", 1);
-        post_shader_blend->setUniform("exposure", 1.0f);
-        post_shader_blend->setUniform("gamma", 1.2f);
-        post_shader_blend->setUniform("bloom", 1.0f);
-        render2D(colorbuffer_scene[0], colorbuffer_blur[!horizontal]);
+        // todo uncomment to bring back bloom (and comment-out the shader_pass,render2D below)
+        // post_shader_blend->use();
+        // post_shader_blend->setUniformInt("scene", 0);
+        // post_shader_blend->setUniformInt("bloomBlur", 1);
+        // post_shader_blend->setUniform("exposure", 1.0f);
+        // post_shader_blend->setUniform("gamma", 1.2f);
+        // post_shader_blend->setUniform("bloom", 1.0f);
+        // render2D(colorbuffer_scene[0], colorbuffer_blur[!horizontal]);
 
-        // post_shader_pass->use();
-        // render2D(colorbuffer_scene[0]); // todo use this during phong/shadowmaps implementation to avoid bloom
+        post_shader_pass->use();
+        render2D(colorbuffer_scene[0]);
 
     }
 };
