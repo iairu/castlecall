@@ -23,6 +23,8 @@
 #include "obj/water.h"
 #include "obj/hierarchical_tree.h"
 
+#include "obj/cube.h"
+
 #include "nature_gen.h"
 
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
@@ -170,4 +172,11 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
         obj->rotation = mapitem.rotation;
         scene->objects.push_back(move(obj));
     }
+
+    // todo temp demo cube for phong debug
+    if (scene_id == 1) {
+        auto testcube = std::make_unique<Cube>();
+        scene->objects.push_back(move(testcube));
+    }
 }
+    

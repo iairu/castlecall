@@ -114,6 +114,7 @@ add_executable(main
     src/scene/sceneWindow.cpp 
     src/scene/camera.cpp
     src/scene/map.cpp
+    src/scene/obj/cube.cpp
     src/scene/obj/bridge.cpp
     src/scene/obj/gate.cpp
     src/scene/obj/ground_castle.cpp
