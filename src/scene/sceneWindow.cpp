@@ -29,17 +29,16 @@ private:
     Scene scene;
     Map * map;
 
-    // framebuffer parts
-    unsigned int framebuffer_default;
-    unsigned int fb_colorbuffers_default[2];
-    unsigned int fb_renderbuffer_default;
+    // Post-processing: renderbuffer/framebuffer/colorbuffer/... parts, shaders, 2D "screen" output => rectangle (rect_...)
+    unsigned int renderbuffer;
+    unsigned int framebuffer_scene;
+    unsigned int colorbuffer_scene[2]; // todo unused colorbuffer_scene[1]
+    unsigned int framebuffer_bright;
+    unsigned int colorbuffer_bright[2]; // todo unused colorbuffer_bright[1]
+    unsigned int framebuffer_blur[2];
+    unsigned int colorbuffer_blur[2];
     std::unique_ptr<ppgso::Shader> post_shader_pass; // just pass whatever colors already exist without changes
-    unsigned int framebuffer;
-    unsigned int fb_colorbuffers[2];
-    unsigned int fb_renderbuffer;
     std::unique_ptr<ppgso::Shader> post_shader_bright; // only export brighter areas
-    unsigned int pingpongFBO[2];
-    unsigned int pingpongBuffer[2];
     std::unique_ptr<ppgso::Shader> post_shader_blur; // gaussian blur per direction
     std::unique_ptr<ppgso::Shader> post_shader_blend; // combine bright+blur passes
     unsigned int rect_vao, rect_vbo;
@@ -77,11 +76,59 @@ private:
             // scene.objects.push_back()
     }
 
+    // Creating framebuffers and colorbuffers
+    void createFramebuffer(unsigned int * framebuffer, unsigned int renderbuffer) {
+        glGenFramebuffers(1, framebuffer); // create a single framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, *framebuffer); // set framebuffer as active
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer); // set its renderbuffer
+    }
+    void create2D(unsigned int count, unsigned int * colorbuffers, unsigned int * framebuffers) {
+        unsigned int attachments[count];
+        glGenTextures(count, colorbuffers);
+        for (unsigned int i = 0; i < count; i++) {
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffers[i]); // set framebuffer as active for framebuffertexture2d
+            glBindTexture(GL_TEXTURE_2D, colorbuffers[i]);
+            // larger color depth - ideal for gamma correction, also includes an alpha channel which isn't really used right now
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SW_WIDTH, SW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL); 
+            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SW_WIDTH, SW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // don't overflow post-process (shaders) over edges
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // don't overflow post-process (shaders) over edges
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorbuffers[i], 0);
+
+            attachments[i] = GL_COLOR_ATTACHMENT0 + i;
+        }
+        // tell OpenGL that we're using 2 color buffers, not just one
+        glDrawBuffers(count, attachments);
+    }
+
+    // Using framebuffers and colorbuffers
+    // Help functions for often used framebuffer configuration, binding, rendering, ...
+    void useFramebuffer(unsigned int framebuffer, bool depth = false, bool setbg = false) {
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); // Bind the given framebuffer as active
+        if (setbg) glClearColor(0.0f, 0.1f, 0.1f, 0); // Set dark blue background
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear depth and color buffers
+        if (depth) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);// Enable depth Z-buffer
+    }
+
+    void render2D(unsigned int colorbuffer, unsigned int colorbuffer2 = 0) { // todo is 0 guaranteed unused?
+        glBindVertexArray(rect_vao); // positioning of the 2D post-processed image on the screen (fullscreen)
+        glBindTexture(GL_TEXTURE_2D, colorbuffer); // save the color contents
+        if (colorbuffer2 != 0) { // save to the second colorbuffer as well
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, colorbuffer2);
+            glActiveTexture(GL_TEXTURE0);
+        }
+        glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
+        glBindVertexArray(0);
+    }
+
 public:
     SceneWindow() : ppgso::Window{"CastleCall", SW_WIDTH, SW_HEIGHT} {
 
 
-        // Shader for the post-process output
+        // Shaders for post-processing
         post_shader_pass = std::make_unique<ppgso::Shader>(screen_pass_vert_glsl, screen_pass_frag_glsl);
         post_shader_bright = std::make_unique<ppgso::Shader>(screen_bright_vert_glsl, screen_bright_frag_glsl);
         post_shader_blur = std::make_unique<ppgso::Shader>(screen_blur_vert_glsl, screen_blur_frag_glsl);
@@ -93,88 +140,27 @@ public:
         // A post-process framebuffer consists of 2 color-attachments (color and bright-areas-color) (the rendered view will go here) 
         // and unused depth+stencil attachments (for which we will use a renderbuffer, which doesn't provide any modification interfaces)
         // unsigned int fb_renderbuffer;
-        glGenRenderbuffers(1, &fb_renderbuffer_default);
-        glBindRenderbuffer(GL_RENDERBUFFER, fb_renderbuffer_default);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SW_WIDTH, SW_HEIGHT);
-        // unsigned int framebuffer;
-        glGenFramebuffers(1, &framebuffer_default);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_default);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fb_renderbuffer_default);
-        // unsigned int fb_colorbuffer;
-        glGenTextures(2, fb_colorbuffers);
-        for (unsigned int i = 0; i < 2; i++) {
-            glBindTexture(GL_TEXTURE_2D, fb_colorbuffers[i]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SW_WIDTH, SW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
-            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SW_WIDTH, SW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, fb_colorbuffers[i], 0);
-        }
-        // tell OpenGL that we're using 2 color buffers, not just one
-        unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, attachments);
-        // Verify framebuffer completeness
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            std::cout << "ERROR: Framebuffer incomplete!" << std::endl;
-        }
-
-
-
-        glGenRenderbuffers(1, &fb_renderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, fb_renderbuffer);
+        glGenRenderbuffers(1, &renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SW_WIDTH, SW_HEIGHT);
 
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, fb_renderbuffer);
+        createFramebuffer(&framebuffer_scene, renderbuffer);
+        create2D(2, colorbuffer_scene, &framebuffer_scene);
 
-        glGenTextures(2, fb_colorbuffers_default);
-        for (unsigned int i = 0; i < 2; i++) {
+        createFramebuffer(&framebuffer_bright, renderbuffer);
+        create2D(2, colorbuffer_bright, &framebuffer_bright);
 
-            glBindTexture(GL_TEXTURE_2D, fb_colorbuffers_default[i]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SW_WIDTH, SW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
-            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SW_WIDTH, SW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, fb_colorbuffers_default[i], 0);
-        }
-        // tell OpenGL that we're using 2 color buffers, not just one
-        glDrawBuffers(2, attachments);
-        // Verify framebuffer completeness
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            std::cout << "ERROR: Framebuffer incomplete!" << std::endl;
-        }
+        createFramebuffer(framebuffer_blur, renderbuffer);
+        createFramebuffer(framebuffer_blur + 1, renderbuffer);
+        create2D(2, colorbuffer_blur, framebuffer_blur);
 
+        // // Verify framebuffer completeness
+        // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        //     std::cout << "ERROR: Framebuffer incomplete!" << std::endl;
+        // }
 
-        // blur
-        glGenFramebuffers(2, pingpongFBO);
-        glGenTextures(2, pingpongBuffer);
-        for (unsigned int i = 0; i < 2; i++)
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
-            glBindTexture(GL_TEXTURE_2D, pingpongBuffer[i]);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SW_WIDTH, SW_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
-            // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SW_WIDTH, SW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glFramebufferTexture2D(
-                GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0
-            );
-        }
-
-        // Verify framebuffer completeness
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            std::cout << "ERROR: Framebuffer incomplete!" << std::endl;
-        }
-
-
-        // Vertex arrays and buffers for rect_map, which maps the final 2D post-processed output coordinates to the whole screen (it's a rectangle)
+        // Vertex arrays and buffers for rect_map, which maps the final 2D post-processed output coordinates 
+        // to the whole screen (it's a rectangle)
         glGenVertexArrays(1, &rect_vao);
         glGenBuffers(1, &rect_vbo);
         glBindVertexArray(rect_vao);
@@ -216,92 +202,53 @@ public:
 
         // FRAMEBUFFER SCENE ---------------------------
 
-        // Render to our framebuffer for later post-processing
-        // The render should (naturally) have depth enabled
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_default);
-        // Set dark blue background
-        // Clear depth and color buffers
-        glClearColor(0.0f, 0.1f, 0.1f, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST); // Enable Z-buffer
+        // This is the only time we're rendering 3D to 2D (depth enabled)
+        // all other framebuffers will be 2D only (with depth disabled)
+        useFramebuffer(framebuffer_scene, true, true);
         // Update and render all objects
         scene.update(dt);
         scene.render();
-
-        glBindVertexArray(rect_vao); // positioning of the 2D post-processed image on the screen (fullscreen)
-        glBindTexture(GL_TEXTURE_2D, fb_colorbuffers_default[0]); // get the color contents (recycled first color buffer for final output)
-        glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
-        glBindVertexArray(0);
+        render2D(colorbuffer_bright[0]);
 
         // FRAMEBUFFER BRIGHTNESS -----------------------------
 
-        // Render to our framebuffer for later post-processing
-        // The render should (naturally) have depth enabled
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        // Set dark blue background
-        // Clear depth and color buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDisable(GL_DEPTH_TEST); // Enable Z-buffer
-        // Update and render all objects
-
+        useFramebuffer(framebuffer_bright);
         post_shader_bright->use();
-        glBindVertexArray(rect_vao); // positioning of the 2D post-processed image on the screen (fullscreen)
-        glBindTexture(GL_TEXTURE_2D, fb_colorbuffers[0]); // get the color contents (recycled first color buffer for final output)
-        glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
-        glBindVertexArray(0);
+        render2D(colorbuffer_scene[0]);
 
         // FRAMEBUFFER BLUR ---------------------------------
 
-        // Output along with post-processing to the default framebuffer
-        // The default framebuffer should not have depth enabled because
-        // it only outputs a post-processed 2D texture over the whole screen
         bool horizontal = true;
         bool first_iteration = true;
         unsigned int amount = 10;
         post_shader_blur->use();
-        for (unsigned int i = 0; i < amount; i++)
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]); 
+        for (unsigned int i = 0; i < amount; i++) {
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_blur[horizontal]); 
             post_shader_blur->setUniform("horizontal", horizontal ? 1.0 : 0.0);
-            // blur input: start with the rendered scene, save it to pingpongbuffer and then keep adding on top of pingpongbuffer
-            glBindTexture(GL_TEXTURE_2D, first_iteration ? fb_colorbuffers_default[0] : pingpongBuffer[!horizontal]); 
-            glBindVertexArray(rect_vao); // positioning of the 2D post-processed image on the screen (fullscreen)
-            glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
-            glBindVertexArray(0);
+            render2D(first_iteration ? colorbuffer_bright[0] : colorbuffer_blur[!horizontal]);
             horizontal = !horizontal;
-            if (first_iteration)
-                first_iteration = false;
+            if (first_iteration) first_iteration = false;
         }
-
 
         // OUTPUT BLEND -----------------------------
 
-        // fb_colorbuffers_default[0] contains brightness filter
-        // pingpongBuffer[0] contains blurred brightness filter
-        // fb_colorbuffers[0] contains untouched scene
+        // colorbuffer_scene[0] contains untouched scene
+        // colorbuffer_bright[0] contains brightness filter
+        // colorbuffer_blur[0] contains blurred brightness filter
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // Clear color buffer (setting a background color is pointless in this case)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Default framebuffer
+        useFramebuffer(0);
+
+        post_shader_blend->use();
+        post_shader_blend->setUniformInt("scene", 0);
+        post_shader_blend->setUniformInt("bloomBlur", 1);
+        post_shader_blend->setUniform("exposure", 1.0f);
+        post_shader_blend->setUniform("gamma", 1.2f);
+        post_shader_blend->setUniform("bloom", 1.0f);
+        render2D(colorbuffer_scene[0], colorbuffer_blur[!horizontal]);
 
         // post_shader_pass->use();
-        // glBindVertexArray(rect_vao); // positioning of the 2D post-processed image on the screen (fullscreen)
-        // glBindTexture(GL_TEXTURE_2D, pingpongBuffer[0]); // get the color contents (recycled first color buffer for final output)
-        // glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
-        post_shader_blend->use();
-        glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE0);
-        post_shader_blend->setUniformInt("scene", 0);
-        glBindTexture(GL_TEXTURE_2D, fb_colorbuffers[0]); // get the color contents (recycled first color buffer for final output)
-        glActiveTexture(GL_TEXTURE1);
-        post_shader_blend->setUniformInt("bloomBlur", 1);
-        glBindTexture(GL_TEXTURE_2D, pingpongBuffer[0]); // get the color contents (recycled first color buffer for final output)
-        post_shader_blend->setUniform("exposure", 1.0);
-        post_shader_blend->setUniform("gamma", 1.2);
-        post_shader_blend->setUniform("bloom", 1.0);
-        glBindVertexArray(rect_vao); // positioning of the final 2D post-processed image on the screen (fullscreen)
-        glDrawArrays(GL_TRIANGLES, 0, 6); // 6 coresponds to qmap coord amount (6 vertices => 2 triangles => one rectangle)
-        glBindVertexArray(0);
+        // render2D(colorbuffer_scene[0]); // todo use this during phong/shadowmaps implementation to avoid bloom
 
     }
 };
