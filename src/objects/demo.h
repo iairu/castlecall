@@ -1,1 +1,0 @@
-// demo object that takes data/something.obj as a Mesh, use colors for textures for now

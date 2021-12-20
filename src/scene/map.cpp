@@ -9,7 +9,6 @@
 #include "obj/ground_wild.h"
 #include "obj/ground_castle.h"
 #include "obj/rock.h"
-#include "obj/water.h"
 #include "obj/bridge.h"
 #include "obj/menu_logo.h"
 #include "obj/menu_txt.h"
@@ -21,6 +20,7 @@
 #include "obj/wall_gate.h"
 #include "obj/wall_rest.h"
 
+#include "obj/water.h"
 #include "obj/hierarchical_tree.h"
 
 #include "nature_gen.h"
@@ -123,7 +123,7 @@ Map::Map() {
 	else std::cout << "Failed to open map" << std::endl;
 }
 
-void Map::placeObj(MAPITEM item, Scene *scene) {
+void Map::placeObj(MAPITEM item, Scene *scene) { // todo: rename to setObj because the name is confusing
     switch (item.object) {
         case CAMERA:
             if(scene->camera == NULL) {
@@ -135,7 +135,9 @@ void Map::placeObj(MAPITEM item, Scene *scene) {
             }
             break;
         case WATER:
-            scene->objects.push_back(move(std::make_unique<Water>()));
+            scene->objects.push_back(move(std::make_unique<Water>())); // todo remove this because it is being placed below
+            // todo from water.cpp move transformations here, or even better, for object without defined transformations don't purge them within placeItems
+            // todo yes that black rectangle is likely water
             break;
         case NATURE_GEN:
             NatureGen::placeTrees(scene, item.pos, item.scale);
