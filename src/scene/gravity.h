@@ -12,10 +12,10 @@ class GravityObject : public Object {
         glm::vec3 gravity{0.0f,0.0001f,0.0f};
         glm::vec3 maxGravity{1.0f,1.0f,1.0f};
         glm::vec3 initSpeed{0.0f,0.0f,0.0f};
-        glm::vec3 speed = initSpeed;
         glm::vec3 lastPos = position;
-        bool collided = false;
+        glm::vec3 speed = initSpeed;
     public:
+        bool collided = false;
         float mass = 0.8f;
         GravityObject();
 

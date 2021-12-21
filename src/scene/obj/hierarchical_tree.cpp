@@ -167,10 +167,12 @@ void Tree::render(Scene &scene) {
 HierarchicalTree::HierarchicalTree() {
     tree = std::make_unique<Tree>();
     ground = std::make_unique<Ground>();
+    leafParticles = std::make_unique<LeafParticleSystem>();
     // todo assign transformations to tree
     // todo assign transformations to ground
     tree->position = {0,0,0};
     ground->position = {1,0,0};
+    // leafParticle->position = {2.0f,6.0f,0};
 }
 
 bool HierarchicalTree::update(Scene &scene, float dt) {
@@ -178,19 +180,20 @@ bool HierarchicalTree::update(Scene &scene, float dt) {
 
     // Update hierarchy
     tree->parent_update(modelMatrix);
-    ground->parent_update(modelMatrix);
+    // ground->parent_update(modelMatrix);
+    leafParticles->parent_update(modelMatrix, scene, dt);
 
     return true;
 }
 
 void HierarchicalTree::render(Scene &scene) {
-    if (scene.keyboard[GLFW_KEY_U]) {
-        tree->position.y -= 0.05;
-        printf(" %.2f \n", tree->position.y);
-    } else if (scene.keyboard[GLFW_KEY_J]) {
-        tree->position.y += 0.05;
-        printf(" %.2f \n", tree->position.y);
-    }
+    // if (scene.keyboard[GLFW_KEY_U]) {
+    //     tree->position.y -= 0.05;
+    //     printf(" %.2f \n", tree->position.y);
+    // } else if (scene.keyboard[GLFW_KEY_J]) {
+    //     tree->position.y += 0.05;
+    //     printf(" %.2f \n", tree->position.y);
+    // }
     // if (scene.keyboard[GLFW_KEY_O]) {
     //     tree->rotation.z -= 0.01;
     //     printf(" %.2f ", tree->rotation.z);
@@ -205,5 +208,6 @@ void HierarchicalTree::render(Scene &scene) {
     // }
     // Render hierarchy
     tree->render(scene);
-    ground->render(scene);
+    // ground->render(scene);
+    leafParticles->render(scene);
 }

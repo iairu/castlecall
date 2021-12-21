@@ -8,6 +8,7 @@
 
 #include "../scene.h"
 #include "../object.h"
+#include "leaf_particles.h"
 
 class Trunk final : public Object {
     private:
@@ -82,6 +83,7 @@ class HierarchicalTree final : public Object {
         // Hierarchy of objects
         std::unique_ptr<Tree> tree;
         std::unique_ptr<Ground> ground;
+        std::unique_ptr<LeafParticleSystem> leafParticles;
 
     public:
         HierarchicalTree();
