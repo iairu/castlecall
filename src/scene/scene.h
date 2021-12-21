@@ -24,12 +24,20 @@ class Scene {
         std::list<std::unique_ptr<CollisionBox>> collisionboxes;
         bool renderCollisionBoxes = false; // for debuging
 
-        // for diffuse, phong shaders
-        glm::vec3 lightPos = glm::vec3{1.0f, 3.0f, 1.0f};
+        // for phong shader
+        glm::vec3 lightPos1 = glm::vec3{1.0f, 3.0f, 1.0f};
+        glm::vec3 lightPos2 = glm::vec3{9.16f, -0.23f, 10.74f};
+        glm::vec3 lightPos3 = glm::vec3{-5.33f, 1.53f, -2.71f};
+
+        glm::vec3 tintColor1 = glm::vec3{1.0f, 1.0f, 1.0f};
+        glm::vec3 tintColor2 = glm::vec3{1.75f, 1.0f, 0.94f};
+        glm::vec3 tintColor3 = glm::vec3{-0.86f, -0.23f, 0.21f};
+
         glm::vec3 ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
         glm::vec3 specularColor = glm::vec3{1.0f, 1.0f, 1.0f};
         glm::vec3 diffuseColor = glm::vec3{1.0f, 1.0f, 1.0f};
-        glm::vec3 tintColor = glm::vec3{1.0f, 1.0f, 1.0f};
+        
+        float ambient = 0.2f;
         float attenuationA = 0.88f;
         float attenuationB = 0.14f;
         float specLight = 1.54f;

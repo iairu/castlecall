@@ -204,15 +204,20 @@ void Water::render(Scene &scene) {
 
     // Set up light
     shader->setUniform("camPos", scene.camera->position);
-    shader->setUniform("lightPos", scene.lightPos);
+    shader->setUniform("lightPos1", scene.lightPos1);
+    shader->setUniform("lightPos2", scene.lightPos2);
+    shader->setUniform("lightPos3", scene.lightPos3);
+    shader->setUniform("tintColor1", scene.tintColor1);
+    shader->setUniform("tintColor2", scene.tintColor2);
+    shader->setUniform("tintColor3", scene.tintColor3);
 
     shader->setUniform("matAmbient", scene.ambientColor);
     shader->setUniform("matDiffuse", scene.diffuseColor);
     shader->setUniform("matSpecular", scene.specularColor);
-    shader->setUniform("tintColor", scene.tintColor);
 
     shader->setUniform("attenuationA", scene.attenuationA);
     shader->setUniform("attenuationB", scene.attenuationB);
+    shader->setUniform("ambient", scene.ambient);
     shader->setUniform("specLight", scene.specLight);
     shader->setUniformInt("specAmountPow", scene.specAmountPow);
 

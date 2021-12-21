@@ -28,62 +28,85 @@ void Scene::update(float time) {
             ++j;
     }
 
-    // move light source
-    if(keyboard[GLFW_KEY_KP_4]) {
-        lightPos.x += 0.01f; // lavo X
-    }
-    else if(keyboard[GLFW_KEY_KP_6]) {
-        lightPos.x -= 0.01f; // pravo X
-    }
-    else if(keyboard[GLFW_KEY_KP_8]) {
-        lightPos.z += 0.01f; // lavo Z
-    }
-    else if(keyboard[GLFW_KEY_KP_2]) {
-        lightPos.z -= 0.01f; // pravo Z
-    }
-    else if(keyboard[GLFW_KEY_KP_7]) {
-        lightPos.y += 0.01f; // hore Y
-    }
-    else if(keyboard[GLFW_KEY_KP_9]) {
-        lightPos.y -= 0.01f; // dole Y
-    }
-    else if(keyboard[GLFW_KEY_KP_5]) {
-        std::cout << "lightPos x:" << lightPos.x << "y:" << lightPos.y << "z:" << lightPos.z << std::endl;
-    }
+    // // move light source
+    // if(keyboard[GLFW_KEY_KP_4]) {
+    //     lightPos1.x += 0.01f; // lavo X
+    // }
+    // else if(keyboard[GLFW_KEY_KP_6]) {
+    //     lightPos1.x -= 0.01f; // pravo X
+    // }
+    // else if(keyboard[GLFW_KEY_KP_8]) {
+    //     lightPos1.z += 0.01f; // lavo Z
+    // }
+    // else if(keyboard[GLFW_KEY_KP_2]) {
+    //     lightPos1.z -= 0.01f; // pravo Z
+    // }
+    // else if(keyboard[GLFW_KEY_KP_7]) {
+    //     lightPos1.y += 0.01f; // hore Y
+    // }
+    // else if(keyboard[GLFW_KEY_KP_9]) {
+    //     lightPos1.y -= 0.01f; // dole Y
+    // }
+    // else if(keyboard[GLFW_KEY_KP_5]) {
+    //     std::cout << "lightPos1 x:" << lightPos1.x << "y:" << lightPos1.y << "z:" << lightPos1.z << std::endl;
+    // }
 
-    // attenuation
-    if(keyboard[GLFW_KEY_1]) {
-        attenuationA += 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_2]) {
-        attenuationA -= 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_3]) {
-        attenuationB += 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_4]) {
-        attenuationB -= 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_5]) {
-        std::cout << "att a:" << attenuationA << " b:" << attenuationB << std::endl;
-    }
+    // // tint light source
+    // if(keyboard[GLFW_KEY_1]) {
+    //     tintColor1.r += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_2]) {
+    //     tintColor1.r -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_3]) {
+    //     tintColor1.g += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_4]) {
+    //     tintColor1.g -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_5]) {
+    //     tintColor1.b += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_6]) {
+    //     tintColor1.b -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_7]) {
+    //     std::cout << "tintColor1 r:" << tintColor1.r << " g:" << tintColor1.g <<  " b:" << tintColor1.b << std::endl;
+    // }
 
-    // specular
-    if(keyboard[GLFW_KEY_6]) {
-        specLight += 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_7]) {
-        specLight -= 0.01f;
-    }
-    else if(keyboard[GLFW_KEY_8]) {
-        specAmountPow += 1;
-    }
-    else if(keyboard[GLFW_KEY_9]) {
-        specAmountPow -= 1;
-    }
-    else if(keyboard[GLFW_KEY_0]) {
-        std::cout << "sl:" << specLight << " sap:" << specAmountPow << std::endl;
-    }
+    // // attenuation
+    // if(keyboard[GLFW_KEY_1]) {
+    //     attenuationA += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_2]) {
+    //     attenuationA -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_3]) {
+    //     attenuationB += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_4]) {
+    //     attenuationB -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_5]) {
+    //     std::cout << "att a:" << attenuationA << " b:" << attenuationB << std::endl;
+    // }
+
+    // // specular
+    // if(keyboard[GLFW_KEY_6]) {
+    //     specLight += 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_7]) {
+    //     specLight -= 0.01f;
+    // }
+    // else if(keyboard[GLFW_KEY_8]) {
+    //     specAmountPow += 1;
+    // }
+    // else if(keyboard[GLFW_KEY_9]) {
+    //     specAmountPow -= 1;
+    // }
+    // else if(keyboard[GLFW_KEY_0]) {
+    //     std::cout << "sl:" << specLight << " sap:" << specAmountPow << std::endl;
+    // }
 }
 
 void Scene::render() {
