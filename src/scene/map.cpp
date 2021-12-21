@@ -26,6 +26,7 @@
 #include "obj/cube.h"
 
 #include "nature_gen.h"
+#include "gravity.h"
 
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
     switch (tgt_obj) {
@@ -172,10 +173,30 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
         scene->objects.push_back(move(obj));
     }
 
-    // todo temp demo cube for phong debug
     if (scene_id == 1) {
-        auto testcube = std::make_unique<Cube>();
-        scene->objects.push_back(move(testcube));
+        // todo remove temp demo for gravity/collision debug
+        // demo gravityobject
+        auto cube = std::make_unique<Cube>();
+        cube->position.y = 10.0f;
+        scene->objects.push_back(move(cube));
+        // demo gravityobject
+        cube = std::make_unique<Cube>();
+        cube->position.x = 10.0f;
+        cube->position.y = 10.0f;
+        scene->objects.push_back(move(cube));
+        // demo gravityobject
+        cube = std::make_unique<Cube>();
+        cube->position.z = 10.0f;
+        cube->position.y = 10.0f;
+        scene->objects.push_back(move(cube));
+
+        // todo maybe change scene id after scene switching implemented?
+        // courtyard ground collision box
+        auto box = std::make_unique<CollisionBox>();
+        box->position.y = -1.4f;
+        box->scale.x = 9.5f;
+        box->scale.z = 9.5f;
+        scene->collisionboxes.push_back(move(box));
     }
 }
     

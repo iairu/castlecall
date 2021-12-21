@@ -5,7 +5,7 @@
 std::unique_ptr<Camera> Scripting::createScriptedCamera(glm::vec3 pos, glm::vec3 rot) {
 
     // todo temp disabled for quicker debugging
-    std::vector<MOVE> keyframetmp = {{0.0, 50.0, glm::vec3(8.48,3.95,3.45), glm::vec3(8.54,2.33,3.11)}};
+    std::vector<MOVE> keyframetmp = {{0.0, 50.0, glm::vec3(17.52,10.96,10.82), glm::vec3(8.54,4.11,3.44)}};
     // std::vector<MOVE> keyframe0 = {{0.0, 50.0, glm::vec3(28.9, 5.42, 6.89), glm::vec3(2.28, 0.08, -1.12)}};
     // std::vector<MOVE> keyframe1 = {{0.0, 7000.0, glm::vec3(29.76, 5.42, -0.18), glm::vec3(8.54,0.09,-1.12)}};
     // std::vector<MOVE> keyframe2 = {{0.0, 7000.0, glm::vec3(17.62,12.75,0.54), glm::vec3(8.54,6.34,-1.12)}};
