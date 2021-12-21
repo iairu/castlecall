@@ -19,10 +19,14 @@ void Skybox::render(Scene &scene) {
     shader->use();
 
     // use camera
+    shader->setUniform("lightPos", scene.lightPos);
+    // shader->setUniform("matAmbient", scene.ambientColor);
+    shader->setUniform("matDiffuse", scene.diffuseColor);
+    // shader->setUniform("matSpecular", scene.specularColor);
+    // shader->setUniform("tintColor", scene.tintColor);
+
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
     shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-
-    // render mesh
     shader->setUniform("ModelMatrix", modelMatrix);
     shader->setUniform("Texture", *texture);
     mesh->render();

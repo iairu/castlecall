@@ -16,20 +16,24 @@ class Scene {
         // Camera
         std::unique_ptr<Camera> camera;
 
-        glm::vec3 light_source;
-
-        bool hasLightSource = false;
-
         // List of all objects to be rendered in this scene
         std::list<std::unique_ptr<Object>> objects;
 
-        glm::vec3 lightDirection{-1.0f, 1.0f, -1.0f}; // keep this for legacy components
+        // for diffuse, phong shaders
+        glm::vec3 lightPos = glm::vec3{1.0f, 3.0f, 1.0f};
+        glm::vec3 ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
+        glm::vec3 specularColor = glm::vec3{1.0f, 1.0f, 1.0f};
+        glm::vec3 diffuseColor = glm::vec3{1.0f, 1.0f, 1.0f};
+        glm::vec3 tintColor = glm::vec3{1.0f, 1.0f, 1.0f};
+        float attenuationA = 0.88f;
+        float attenuationB = 0.14f;
+        float specLight = 1.54f;
+        int specAmountPow = 8;
 
         // Keyboard state (map)
         std::map< int, int > keyboard;
 
         // Cursor state (struct)
-        glm::vec3 calculateLightDirection(glm::vec3 object_pos);
 };
 
 #endif

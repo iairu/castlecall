@@ -14,6 +14,63 @@ void Scene::update(float time) {
     else
       ++i;
   }
+
+    // move light source
+    if(keyboard[GLFW_KEY_KP_4]) {
+        lightPos.x += 0.01f; // lavo X
+    }
+    else if(keyboard[GLFW_KEY_KP_6]) {
+        lightPos.x -= 0.01f; // pravo X
+    }
+    else if(keyboard[GLFW_KEY_KP_8]) {
+        lightPos.z += 0.01f; // lavo Z
+    }
+    else if(keyboard[GLFW_KEY_KP_2]) {
+        lightPos.z -= 0.01f; // pravo Z
+    }
+    else if(keyboard[GLFW_KEY_KP_7]) {
+        lightPos.y += 0.01f; // hore Y
+    }
+    else if(keyboard[GLFW_KEY_KP_9]) {
+        lightPos.y -= 0.01f; // dole Y
+    }
+    else if(keyboard[GLFW_KEY_KP_5]) {
+        std::cout << "lightPos x:" << lightPos.x << "y:" << lightPos.y << "z:" << lightPos.z << std::endl;
+    }
+
+    // attenuation
+    if(keyboard[GLFW_KEY_1]) {
+        attenuationA += 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_2]) {
+        attenuationA -= 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_3]) {
+        attenuationB += 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_4]) {
+        attenuationB -= 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_5]) {
+        std::cout << "att a:" << attenuationA << " b:" << attenuationB << std::endl;
+    }
+
+    // specular
+    if(keyboard[GLFW_KEY_6]) {
+        specLight += 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_7]) {
+        specLight -= 0.01f;
+    }
+    else if(keyboard[GLFW_KEY_8]) {
+        specAmountPow += 1;
+    }
+    else if(keyboard[GLFW_KEY_9]) {
+        specAmountPow -= 1;
+    }
+    else if(keyboard[GLFW_KEY_0]) {
+        std::cout << "sl:" << specLight << " sap:" << specAmountPow << std::endl;
+    }
 }
 
 void Scene::render() {
@@ -53,13 +110,3 @@ void Scene::render() {
 
   return intersected;
 }*/
-
-glm::vec3 Scene::calculateLightDirection(glm::vec3 object_pos) {
-    if( ! this->hasLightSource ) return this->lightDirection;
-    glm::vec3 result = object_pos - this->light_source;
-    float div = (abs(result.x) > abs(result.y)) ? ((abs(result.x) > abs(result.z)) ? abs(result.x) : abs(result.z)) : ((abs(result.y) > abs(result.z)) ? abs(result.y) : abs(result.z));
-    if ( div < 1.0f ) div = 1.0f;
-    result *= -1;
-    return glm::vec3(result.x / div, result.y / div, result.z / div); // return normalized light dir
-}
-

@@ -139,6 +139,16 @@ void Water::buffer(bool init) {
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.size() * sizeof(face), mesh.data(), GL_STATIC_DRAW);
+
+        // // Set normal inputs
+        // auto texCoord_attrib = shader->getAttribLocation("Normal");
+        // glEnableVertexAttribArray(normal_attrib);
+        // glVertexAttribPointer(normal_attrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+        // // Copy normal vectors to gpu
+        // glGenBuffers(1, &nbo);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nbo);
+        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -193,14 +203,21 @@ void Water::render(Scene &scene) {
     shader->use();
 
     // Set up light
-    shader->setUniform("LightDirection", scene.calculateLightDirection(position));
-    shader->setUniform("Transparency", 0.25f);
+    shader->setUniform("camPos", scene.camera->position);
+    shader->setUniform("lightPos", scene.lightPos);
 
-    // use camera
+    shader->setUniform("matAmbient", scene.ambientColor);
+    shader->setUniform("matDiffuse", scene.diffuseColor);
+    shader->setUniform("matSpecular", scene.specularColor);
+    shader->setUniform("tintColor", scene.tintColor);
+
+    shader->setUniform("attenuationA", scene.attenuationA);
+    shader->setUniform("attenuationB", scene.attenuationB);
+    shader->setUniform("specLight", scene.specLight);
+    shader->setUniformInt("specAmountPow", scene.specAmountPow);
+
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
     shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-
-    // render mesh
     shader->setUniform("ModelMatrix", modelMatrix);
     shader->setUniform("Texture", *texture);
 

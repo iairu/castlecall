@@ -33,7 +33,7 @@ void Camera::update(Scene &scene, float dt) {
         } else if(scene.keyboard[GLFW_KEY_KP_1]) {
             position.y += 0.01; // hore Y
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
-        } else if(scene.keyboard[GLFW_KEY_KP_2]) {
+        } else if(scene.keyboard[GLFW_KEY_KP_3]) {
             position.y -= 0.01; // dole -Y
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
 
