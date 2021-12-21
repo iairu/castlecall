@@ -133,6 +133,7 @@ add_executable(main
     src/scene/obj/wall_rest.cpp
     src/scene/obj/water.cpp
     src/scene/obj/hierarchical_tree.cpp
+    src/scene/obj/leaf_particles.cpp
     src/scene/scripting.cpp
     src/scene/nature_gen.cpp
     src/main.cpp)
