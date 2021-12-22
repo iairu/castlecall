@@ -28,6 +28,20 @@ void Scene::update(float time) {
             ++j;
     }
 
+    // Animate tintColor1 between _from and _to, pingpong style
+    if (!tintColor1_pong && tintColor1_onTime + time > tintColor1_maxTime) { // overflow
+        tintColor1_pong = true;
+    } else if (tintColor1_pong && tintColor1_onTime - time < 0.0f) { // underflow
+        tintColor1_pong = false;
+    } else if (!tintColor1_pong) {
+        tintColor1_onTime += time; // ping
+    } else {
+        tintColor1_onTime -= time; // pong
+    }
+    float at = tintColor1_onTime / tintColor1_maxTime; // normalized onTime to <0.0f;1.0f> for interpolation
+    tintColor1 = (tintColor1_to - tintColor1_from) * at + tintColor1_from; // interpolated tintcolor at given normalized time
+
+
     // // move light source
     // if(keyboard[GLFW_KEY_KP_4]) {
     //     lightPos1.x += 0.01f; // lavo X
@@ -74,22 +88,22 @@ void Scene::update(float time) {
     //     std::cout << "tintColor1 r:" << tintColor1.r << " g:" << tintColor1.g <<  " b:" << tintColor1.b << std::endl;
     // }
 
-    // adjust light dampening
-    if(keyboard[GLFW_KEY_1]) {
-        diffusePower += 0.03f;
-    }
-    else if(keyboard[GLFW_KEY_2]) {
-        diffusePower -= 0.03f;
-    }
-    else if(keyboard[GLFW_KEY_3]) {
-        specularPower += 0.03f;
-    }
-    else if(keyboard[GLFW_KEY_4]) {
-        specularPower -= 0.03f;
-    }
-    else if(keyboard[GLFW_KEY_5]) {
-        std::cout << "power d:" << diffusePower << " s:" << specularPower << std::endl;
-    }
+    // // adjust light dampening
+    // if(keyboard[GLFW_KEY_1]) {
+    //     diffusePower += 0.03f;
+    // }
+    // else if(keyboard[GLFW_KEY_2]) {
+    //     diffusePower -= 0.03f;
+    // }
+    // else if(keyboard[GLFW_KEY_3]) {
+    //     specularPower += 0.03f;
+    // }
+    // else if(keyboard[GLFW_KEY_4]) {
+    //     specularPower -= 0.03f;
+    // }
+    // else if(keyboard[GLFW_KEY_5]) {
+    //     std::cout << "power d:" << diffusePower << " s:" << specularPower << std::endl;
+    // }
 
     // // specular
     // if(keyboard[GLFW_KEY_6]) {
@@ -122,35 +136,3 @@ void Scene::render() {
     for ( auto& box : collisionboxes )
         box->render(*this);
 }
-
-/*std::vector<Object*> Scene::intersect(const glm::vec3 &position, const glm::vec3 &direction) {
-  std::vector<Object*> intersected = {};
-  for(auto& object : objects) {
-    // Collision with sphere of size object->scale.x
-    auto oc = position - object->position;
-    auto radius = object->scale.x;
-    auto a = glm::dot(direction, direction);
-    auto b = glm::dot(oc, direction);
-    auto c = glm::dot(oc, oc) - radius * radius;
-    auto dis = b * b - a * c;
-
-    if (dis > 0) {
-      auto e = sqrt(dis);
-      auto t = (-b - e) / a;
-
-      if ( t > 0 ) {
-        intersected.push_back(object.get());
-        continue;
-      }
-
-      t = (-b + e) / a;
-
-      if ( t > 0 ) {
-        intersected.push_back(object.get());
-        continue;
-      }
-    }
-  }
-
-  return intersected;
-}*/

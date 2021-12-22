@@ -43,6 +43,13 @@ class Scene {
         float specLight = 1.54f;
         int specAmountPow = 8;
 
+        // Animated tint color 1
+        glm::vec3 tintColor1_from = glm::vec3{1.0f, 1.0f, 0.5f};
+        glm::vec3 tintColor1_to = glm::vec3{0.5f, 0.5f, 1.0f};
+        float tintColor1_onTime = 0.0f;
+        float tintColor1_maxTime = 5000.0f;
+        bool tintColor1_pong = false;
+
         // Keyboard state (map)
         std::map< int, int > keyboard;
 
