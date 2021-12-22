@@ -22,10 +22,7 @@ class Gate final : public Object {
 
         void render(Scene &scene) override;
 
-        bool update(Scene &scene, float dt) override {
-            generateModelMatrix();
-            return true;
-        }
+        bool update(Scene &scene, float dt) override;
 
         void onClick(Scene &scene) override {}
 };

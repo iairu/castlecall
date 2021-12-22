@@ -12,6 +12,27 @@ Gate::Gate() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "gate_hall.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "gate.obj");
+
+    // 0.0f keyframe added automatically for default transformation
+    addKeyframe(3000.0f, glm::vec3{position.x, position.y - 5.0f, position.z}, rotation, scale); // open the gate
+    addKeyframe(10000.0f, glm::vec3{position.x, position.y - 5.0f, position.z}, rotation, scale); // leave open for a while
+    addKeyframe(13000.0f, glm::vec3{position.x, position.y, position.z}, rotation, scale); // close the gate
+    addKeyframe(20000.0f, glm::vec3{position.x, position.y, position.z}, rotation, scale); // leave closed for a while
+    loop = true; // loop the animation
+}
+
+
+bool Gate::update(Scene &scene, float dt) {
+    // Don't animate this object
+    // generateModelMatrix();
+    
+    // Animate this object and after animation ends leave it be on its last position
+    generateFrameModelMatrix(dt);
+
+    // Animate this object and after animation ends delete it
+    // return generateFrameModelMatrix();
+    
+    return true;
 }
 
 void Gate::render(Scene &scene) {
