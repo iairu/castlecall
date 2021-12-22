@@ -9,7 +9,22 @@
 #include "forces.h"
 #include "camera.h"
 
+typedef enum _AXIS {X, Y, Z} AXIS;
+
+typedef struct _SCENE_SWITCHER {
+    unsigned int source, target; // prepinac sceny
+    AXIS check; // os na porovnanie
+    bool src_is_less; // znacka na ktorej strane priesecnika sa ma scena prepnut
+    float pos; // pozicia na osi
+} SCENE_SWITCHER, *PSCENE_SWITCHER;
+
+
 class Scene {
+    private:
+        std::vector<SCENE_SWITCHER> switchers;
+
+        unsigned int scene_id;
+    
     public:
         void update(float time); // mass update all objects
         void render(); // mass render all objects
@@ -54,6 +69,19 @@ class Scene {
         std::map< int, int > keyboard;
 
         // Cursor state (struct)
+
+        
+        void registerSwitcher(unsigned int owner, glm::vec3 targets, glm::vec3 pos);
+
+        void setID(unsigned int id) {
+            this->scene_id = id;
+        }
+
+        unsigned int tgtScene() {
+            return this->scene_id;
+        }
+
+        void performSwitchCheck();
 };
 
 #endif

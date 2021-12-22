@@ -126,16 +126,16 @@ Map::Map() {
 	else std::cout << "Failed to open map" << std::endl;
 }
 
-void Map::placeObj(MAPITEM item, Scene *scene) { // todo: rename to setObj because the name is confusing
+void Map::placeObj(MAPITEM item, Scene *scene, unsigned int id) { // todo: rename to setObj because the name is confusing
     switch (item.object) {
         case CAMERA:
             if(scene->camera == NULL) {
                 scene->camera = move(Scripting::createScriptedCamera(item.pos, item.rotation));
             }
-            else {
+            /*else {
                 scene->camera->position = item.pos;
                 scene->camera->back = item.rotation;
-            }
+            }*/ // do not touch camera coz experience suck
             break;
         case WATER:
             scene->objects.push_back(move(std::make_unique<Water>())); // todo remove this because it is being placed below
@@ -148,6 +148,9 @@ void Map::placeObj(MAPITEM item, Scene *scene) { // todo: rename to setObj becau
         case LIGHT:
             // scene->lightPos = item.pos;
             break;
+        case SCENE_SWITCH:
+            scene->registerSwitcher(id, item.rotation, item.pos); // current scene id, target id on cross with x,y,z position of line
+            break;
         default:
             break;
     }
@@ -159,12 +162,14 @@ void Map::placeItems(unsigned int scene_id, Scene *scene) {
         return;
     }
 
+    scene->setID(scene_id); // vyzaduje sa len pri prvej scene, inak to uz bude switchnute
+
     std::vector<MAPITEM> * map = &this->scenes.at(scene_id - 1).map;
 
     for ( auto mapitem : *map) {
         auto obj = Map::getObj(mapitem.object);
         if (obj == NULL) {
-            Map::placeObj(mapitem, scene);
+            Map::placeObj(mapitem, scene, scene_id);
             continue;
         }
         obj->scale = mapitem.scale;

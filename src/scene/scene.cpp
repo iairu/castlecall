@@ -3,6 +3,8 @@
 void Scene::update(float time) {
     camera->update(*this, time);
 
+    this->performSwitchCheck();
+
     // Use iterator to update all objects so we can remove while iterating
     auto i = std::begin(objects);
 
@@ -135,4 +137,51 @@ void Scene::render() {
     // Simply render all collision boxes
     for ( auto& box : collisionboxes )
         box->render(*this);
+}
+
+void Scene::registerSwitcher(unsigned int owner, glm::vec3 targets, glm::vec3 pos) {
+    SCENE_SWITCHER switcher;
+    // std::cout << targets.x << ", converted: " << static_cast<unsigned int>(targets.x) << std::endl;
+    switcher.source = owner;
+    if(targets.x > 0.0f) {
+        switcher.target = static_cast<unsigned int>(targets.x);
+        switcher.check = X;
+        switcher.pos = pos.x;
+    }
+    else if(targets.y > 0.0f) {
+        switcher.target = static_cast<unsigned int>(targets.y);
+        switcher.check = Y; // this is useless coz no one is gonna use that but ok
+        switcher.pos = pos.y;
+    }
+    else if(targets.z > 0.0f){
+        switcher.target = static_cast<unsigned int>(targets.z);
+        switcher.check = Z;
+        switcher.pos = pos.z;
+    }
+    glm::vec3 cmp = camera->position - pos;
+    if(cmp[switcher.check] < 0.0f) switcher.src_is_less = true;
+    else switcher.src_is_less = false;
+
+    for(SCENE_SWITCHER sw : this->switchers) {
+        if(sw.target == switcher.target && sw.source == owner && sw.src_is_less == switcher.src_is_less && switcher.check == sw.check) return;
+    }
+
+    // std::cout << "registering switcher at " << switcher.check << ", pos: " << switcher.pos << " cam is less: " << switcher.src_is_less << ", cam: " << camera->position[switcher.check] << std::endl;
+
+    this->switchers.push_back(switcher);
+}
+
+
+void Scene::performSwitchCheck() {
+    for(SCENE_SWITCHER sw : this->switchers) {
+        if(sw.source == this->scene_id) {
+            if(camera->position[sw.check] < sw.pos && !sw.src_is_less) this->scene_id = sw.target;
+            else if(camera->position[sw.check] > sw.pos && sw.src_is_less) this->scene_id = sw.target;
+        }
+        else if(sw.target == this->scene_id) {
+            if(camera->position[sw.check] < sw.pos && sw.src_is_less) this->scene_id = sw.source;
+            else if(camera->position[sw.check] > sw.pos && !sw.src_is_less) this->scene_id = sw.source;
+        }
+        // std::cout << sw.target << ", src: " << sw.source << ", cam: " << camera->position[sw.check] << ", switcher: " << sw.pos << ", less: " << sw.src_is_less << ", arg: " << sw.check << std::endl;
+    }
 }
