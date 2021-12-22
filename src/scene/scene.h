@@ -6,7 +6,7 @@
 #include <list>
 
 #include "object.h"
-#include "gravity.h"
+#include "forces.h"
 #include "camera.h"
 
 class Scene {
@@ -20,7 +20,7 @@ class Scene {
         // List of all objects to be rendered in this scene
         std::list<std::unique_ptr<Object>> objects;
 
-        // List of invisible boxes that can stop gravity for GravityObjects
+        // List of invisible boxes that can stop gravity for ForceObjects
         std::list<std::unique_ptr<CollisionBox>> collisionboxes;
         bool renderCollisionBoxes = false; // for debuging
 

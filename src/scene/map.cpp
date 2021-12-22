@@ -26,7 +26,7 @@
 #include "obj/cube.h"
 
 #include "nature_gen.h"
-#include "gravity.h"
+#include "forces.h"
 
 std::unique_ptr<Object> Map::getObj(ITMTYPE tgt_obj) {
     switch (tgt_obj) {

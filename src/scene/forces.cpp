@@ -7,12 +7,12 @@
 #include <shaders/color_frag_glsl.h>
 #include <shaders/color_vert_glsl.h>
 
-#include "gravity.h"
+#include "forces.h"
 #include "scene.h"
 #include "obj/paths.h"
 #include "ppgso.h"
 
-GravityObject::GravityObject() {
+ForceObject::ForceObject() {
 }
 
 // float angle(glm::vec3 a, glm::vec3 b){
@@ -21,7 +21,7 @@ GravityObject::GravityObject() {
 //     return glm::acos(glm::dot(da, db));
 // }
 
-bool GravityObject::update(Scene &scene, float dt) {
+bool ForceObject::update(Scene &scene, float dt) {
     if (!collided) {
         // Increase speed by gravity
         // the speed could in theory become fast enough to completely skip the height/width of the object
@@ -33,6 +33,22 @@ bool GravityObject::update(Scene &scene, float dt) {
         // Decrease position by speed
         lastPos = position;
         position -= speed;
+
+        // Simulate a wind gust using oscillation every-so-often
+        windTimeoutCounter += dt / 500.0f;
+        if (windTimeoutCounter >= windEvery) {
+            windTimeoutCounter = 0.0f;
+            // Adjust position by wind strength in the given direction
+            // Create a simple wind fluctuation using sine function
+            windFluctuationSum += windFluctuation;
+            float windFluctuationMax = 2 * 3.14f;
+            if (windFluctuationSum.x > windFluctuationMax) windFluctuationSum.x -= windFluctuationMax;
+            if (windFluctuationSum.y > windFluctuationMax) windFluctuationSum.y -= windFluctuationMax;
+            if (windFluctuationSum.z > windFluctuationMax) windFluctuationSum.z -= windFluctuationMax;
+            position.x += windStrength * (float) sin(windFluctuationSum.x);
+            position.y += windStrength * (float) sin(windFluctuationSum.y);
+            position.z += windStrength * (float) sin(windFluctuationSum.z);
+        }
     }
 
     // std::cout << speed.y << " " << position.y << std::endl;
@@ -51,7 +67,7 @@ bool GravityObject::update(Scene &scene, float dt) {
         float cornerZmin = box->position.z - box->scale.z;
         float cornerZmax = box->position.z + box->scale.z;
 
-        // Check if the GravityObject has entered the collision box
+        // Check if the ForceObject has entered the collision box
         // if the box has been entered from the given side, subtract the last movement
         // each side is scale/2 away from the center (position) of the object
         // note: if the scene has dynamically moving objects with collision boxes underneath then we don't want to stop the gravity
@@ -104,7 +120,7 @@ void CollisionBox::render(Scene &scene) {
     if (!shader) shader = std::make_unique<ppgso::Shader>(color_vert_glsl, color_frag_glsl);
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "cube.obj"); // cube.obj has scale set to 1,1,1 to match
     shader->use();
-    shader->setUniform("OverallColor", glm::vec3{1.0f, 0.0f, 0.0f}); // todo show collision boxes as red and semitransparent
+    shader->setUniform("OverallColor", glm::vec3{1.0f, 0.0f, 0.0f});
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
     shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
     shader->setUniform("ModelMatrix", modelMatrix);

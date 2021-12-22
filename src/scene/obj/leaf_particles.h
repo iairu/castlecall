@@ -7,15 +7,15 @@
 
 #include "../scene.h"
 #include "../object.h"
-#include "../gravity.h"
+#include "../forces.h"
 
-class LeafParticle final : public GravityObject {
+class LeafParticle final : public ForceObject {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
         static std::unique_ptr<ppgso::Shader> shader;
         static std::unique_ptr<ppgso::Texture> texture;
-        typedef GravityObject super;
+        typedef ForceObject super;
     public:
         float decayTime; // generated alongside particles starting position by LeafParticleSystem::generateParticles();
         
@@ -38,10 +38,10 @@ class LeafParticleSystem {
         std::list<std::unique_ptr<LeafParticle>> particles;
         void generateParticle();
     public:
-        float min_gen_radius = 2.0f; // see generateParticle
-        float max_gen_radius = 3.3f; // see generateParticle
-        float min_gen_decayTime = 2000.0f; // see generateParticle
-        float max_gen_decayTime = 5000.0f; // see generateParticle
+        float min_gen_radius = 3.0f; // see generateParticle
+        float max_gen_radius = 4.3f; // see generateParticle
+        float min_gen_decayTime = 1000.0f; // see generateParticle
+        float max_gen_decayTime = 4000.0f; // see generateParticle
         float mass = 0.3f; // lower mass => slower gravity fall
         float height = 6.0f; // see generateParticle - all start at this height and are brought down by gravity
         int n = 2; // number of particles at any given time

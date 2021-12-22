@@ -8,17 +8,17 @@
 
 #include "../scene.h"
 #include "../object.h"
-#include "../gravity.h"
+#include "../forces.h"
 
 //#include "paths.h"
 
-class Cube final : public GravityObject {
+class Cube final : public ForceObject {
     private:
         // Static resources (Shared between instances)
         static std::unique_ptr<ppgso::Mesh> mesh;
         static std::unique_ptr<ppgso::Shader> shader;
         static std::unique_ptr<ppgso::Texture> texture;
-        typedef GravityObject super;
+        typedef ForceObject super;
     public:
         Cube();
 

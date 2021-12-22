@@ -7,17 +7,23 @@
 #include "ppgso.h"
 
 // An object that has gravity properties and can collide against CollisionBoxes in scene.collisionboxes
-class GravityObject : public Object {
+class ForceObject : public Object {
     private:
         glm::vec3 gravity{0.0f,0.0001f,0.0f};
-        glm::vec3 maxGravity{1.0f,1.0f,1.0f};
-        glm::vec3 initSpeed{0.0f,0.0f,0.0f};
+        glm::vec3 maxGravity{0.0f,1.0f,0.0f};
+        glm::vec3 windFluctuation{0.8f, 0.0f, 0.8f}; // 0.0f => no wind for the axis, (0.0f;1.0f> => reverse back&forth wind gust distance (lower => further away)
+        float windEvery = 0.7f; // higher => less oscillation => more choppy
+        float windStrength = 0.5f; // lower => less delta position on each wind simulation => less choppy
+
+        float windTimeoutCounter = 0.0f;
+        glm::vec3 windFluctuationSum{0.0f, 0.0f, 0.0f};
         glm::vec3 lastPos = position;
+        glm::vec3 initSpeed{0.0f,0.0f,0.0f};
         glm::vec3 speed = initSpeed;
     public:
         bool collided = false;
         float mass = 0.8f;
-        GravityObject();
+        ForceObject();
 
         bool update(Scene &scene, float dt) override;
 };
