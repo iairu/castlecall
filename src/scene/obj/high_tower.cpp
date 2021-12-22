@@ -12,6 +12,26 @@ HighTower::HighTower() {
     if (!shader) shader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "hightower.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "high_tower.obj");
+
+    // 0.0f keyframe added automatically for default transformation
+    addKeyframe(1000.0f, glm::vec3{position.x + 1.0f, position.y, position.z}, rotation, scale);
+    addKeyframe(2000.0f, glm::vec3{position.x, position.y, position.z + 1.0f}, rotation, scale);
+    addKeyframe(3000.0f, glm::vec3{position.x, position.y, position.z}, rotation, scale); // default transformation at the end as well for non-choppy loop
+    loop = true;
+}
+
+
+bool HighTower::update(Scene &scene, float dt) {
+    // Don't animate this object
+    // generateModelMatrix();
+    
+    // Animate this object and after animation ends leave it be on its last position
+    generateFrameModelMatrix(dt);
+
+    // Animate this object and after animation ends delete it
+    // return generateFrameModelMatrix();
+    
+    return true;
 }
 
 void HighTower::render(Scene &scene) {
