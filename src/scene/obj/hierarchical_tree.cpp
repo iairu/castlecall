@@ -15,100 +15,103 @@ std::unique_ptr<ppgso::Texture> Ground::texture;
 std::unique_ptr<ppgso::Shader> Ground::shader;
 
 Trunk::Trunk() {
+    if (!shader) shader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "nature.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tree_trunk.obj");
 }
 Leaves::Leaves() {
+    if (!shader) shader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "nature.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tree_leaves.obj");
 }
 Ground::Ground() {
+    if (!shader) shader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
     if (!texture) texture = std::make_unique<ppgso::Texture>(ppgso::image::loadBMP(TEXTURE_PATH "nature.bmp"));
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "tree_ground.obj");
 }
 
-void Trunk::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
-    altShader->use();
+void Trunk::render(Scene &scene) {
+    shader->use();
 
     // Set up light
-    altShader->setUniform("camPos", scene.camera->position);
-    altShader->setUniform("lightPos1", scene.lightPos1);
-    altShader->setUniform("lightPos2", scene.lightPos2);
-    altShader->setUniform("lightPos3", scene.lightPos3);
-    altShader->setUniform("tintColor1", scene.tintColor1);
-    altShader->setUniform("tintColor2", scene.tintColor2);
-    altShader->setUniform("tintColor3", scene.tintColor3);
+    shader->setUniform("camPos", scene.camera->position);
+    shader->setUniform("lightPos1", scene.lightPos1);
+    shader->setUniform("lightPos2", scene.lightPos2);
+    shader->setUniform("lightPos3", scene.lightPos3);
+    shader->setUniform("tintColor1", scene.tintColor1);
+    shader->setUniform("tintColor2", scene.tintColor2);
+    shader->setUniform("tintColor3", scene.tintColor3);
 
-    altShader->setUniform("matAmbient", scene.ambientColor);
-    altShader->setUniform("matDiffuse", scene.diffuseColor);
-    altShader->setUniform("matSpecular", scene.specularColor);
+    shader->setUniform("matAmbient", scene.ambientColor);
+    shader->setUniform("matDiffuse", scene.diffuseColor);
+    shader->setUniform("matSpecular", scene.specularColor);
 
-    altShader->setUniform("diffusePower", scene.diffusePower);
-    altShader->setUniform("specularPower", scene.specularPower);
-    altShader->setUniform("ambient", scene.ambient);
-    altShader->setUniform("specLight", scene.specLight);
-    altShader->setUniformInt("specAmountPow", scene.specAmountPow);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
+    shader->setUniform("ambient", scene.ambient);
+    shader->setUniform("specLight", scene.specLight);
+    shader->setUniformInt("specAmountPow", scene.specAmountPow);
 
-    altShader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
-    altShader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-    altShader->setUniform("ModelMatrix", modelMatrix);
-    altShader->setUniform("Texture", *texture);
+    shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
+    shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
+    shader->setUniform("ModelMatrix", modelMatrix);
+    shader->setUniform("Texture", *texture);
     mesh->render();
 }
-void Leaves::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
-    altShader->use();
+void Leaves::render(Scene &scene) {
+    shader->use();
 
     // Set up light
-    altShader->setUniform("camPos", scene.camera->position);
-    altShader->setUniform("lightPos1", scene.lightPos1);
-    altShader->setUniform("lightPos2", scene.lightPos2);
-    altShader->setUniform("lightPos3", scene.lightPos3);
-    altShader->setUniform("tintColor1", scene.tintColor1);
-    altShader->setUniform("tintColor2", scene.tintColor2);
-    altShader->setUniform("tintColor3", scene.tintColor3);
+    shader->setUniform("camPos", scene.camera->position);
+    shader->setUniform("lightPos1", scene.lightPos1);
+    shader->setUniform("lightPos2", scene.lightPos2);
+    shader->setUniform("lightPos3", scene.lightPos3);
+    shader->setUniform("tintColor1", scene.tintColor1);
+    shader->setUniform("tintColor2", scene.tintColor2);
+    shader->setUniform("tintColor3", scene.tintColor3);
 
-    altShader->setUniform("matAmbient", scene.ambientColor);
-    altShader->setUniform("matDiffuse", scene.diffuseColor);
-    altShader->setUniform("matSpecular", scene.specularColor);
+    shader->setUniform("matAmbient", scene.ambientColor);
+    shader->setUniform("matDiffuse", scene.diffuseColor);
+    shader->setUniform("matSpecular", scene.specularColor);
 
-    altShader->setUniform("diffusePower", scene.diffusePower);
-    altShader->setUniform("specularPower", scene.specularPower);
-    altShader->setUniform("ambient", scene.ambient);
-    altShader->setUniform("specLight", scene.specLight);
-    altShader->setUniformInt("specAmountPow", scene.specAmountPow);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
+    shader->setUniform("ambient", scene.ambient);
+    shader->setUniform("specLight", scene.specLight);
+    shader->setUniformInt("specAmountPow", scene.specAmountPow);
 
-    altShader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
-    altShader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-    altShader->setUniform("ModelMatrix", modelMatrix);
-    altShader->setUniform("Texture", *texture);
+    shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
+    shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
+    shader->setUniform("ModelMatrix", modelMatrix);
+    shader->setUniform("Texture", *texture);
     mesh->render();
 }
-void Ground::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
-    altShader->use();
+void Ground::render(Scene &scene) {
+    shader->use();
 
     // Set up light
-    altShader->setUniform("camPos", scene.camera->position);
-    altShader->setUniform("lightPos1", scene.lightPos1);
-    altShader->setUniform("lightPos2", scene.lightPos2);
-    altShader->setUniform("lightPos3", scene.lightPos3);
-    altShader->setUniform("tintColor1", scene.tintColor1);
-    altShader->setUniform("tintColor2", scene.tintColor2);
-    altShader->setUniform("tintColor3", scene.tintColor3);
+    shader->setUniform("camPos", scene.camera->position);
+    shader->setUniform("lightPos1", scene.lightPos1);
+    shader->setUniform("lightPos2", scene.lightPos2);
+    shader->setUniform("lightPos3", scene.lightPos3);
+    shader->setUniform("tintColor1", scene.tintColor1);
+    shader->setUniform("tintColor2", scene.tintColor2);
+    shader->setUniform("tintColor3", scene.tintColor3);
 
-    altShader->setUniform("matAmbient", scene.ambientColor);
-    altShader->setUniform("matDiffuse", scene.diffuseColor);
-    altShader->setUniform("matSpecular", scene.specularColor);
+    shader->setUniform("matAmbient", scene.ambientColor);
+    shader->setUniform("matDiffuse", scene.diffuseColor);
+    shader->setUniform("matSpecular", scene.specularColor);
 
-    altShader->setUniform("diffusePower", scene.diffusePower);
-    altShader->setUniform("specularPower", scene.specularPower);
-    altShader->setUniform("ambient", scene.ambient);
-    altShader->setUniform("specLight", scene.specLight);
-    altShader->setUniformInt("specAmountPow", scene.specAmountPow);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
+    shader->setUniform("ambient", scene.ambient);
+    shader->setUniform("specLight", scene.specLight);
+    shader->setUniformInt("specAmountPow", scene.specAmountPow);
 
-    altShader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
-    altShader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-    altShader->setUniform("ModelMatrix", modelMatrix);
-    altShader->setUniform("Texture", *texture);
+    shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
+    shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
+    shader->setUniform("ModelMatrix", modelMatrix);
+    shader->setUniform("Texture", *texture);
     mesh->render();
 }
 
@@ -161,7 +164,7 @@ bool Tree::parent_update(glm::mat4 parentModelMatrix) {
     return true;
 }
 
-void Tree::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
+void Tree::render(Scene &scene) {
     /*if (scene.keyboard[GLFW_KEY_I]) {
         leaves2->position.y -= 0.01;
         printf(" %.2f \n", leaves2->position.y);
@@ -171,9 +174,9 @@ void Tree::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
     }*/
 
     // Render hierarchy
-    trunk->render(scene, move(altShader));
-    leaves->render(scene, move(altShader));
-    leaves2->render(scene, move(altShader));
+    trunk->render(scene);
+    leaves->render(scene);
+    leaves2->render(scene);
 }
 
 HierarchicalTree::HierarchicalTree() {
@@ -197,7 +200,7 @@ bool HierarchicalTree::update(Scene &scene, float dt) {
     return true;
 }
 
-void HierarchicalTree::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
+void HierarchicalTree::render(Scene &scene) {
     // if (scene.keyboard[GLFW_KEY_U]) {
     //     tree->position.y -= 0.05;
     //     printf(" %.2f \n", tree->position.y);
@@ -218,7 +221,7 @@ void HierarchicalTree::render(Scene &scene, std::unique_ptr<ppgso::Shader> altSh
     //     printf(" %.2f ", rotation.z);
     // }
     // Render hierarchy
-    tree->render(scene, move(altShader));
+    tree->render(scene);
     // ground->render(scene);
-    leafParticles->render(scene, move(altShader));
+    leafParticles->render(scene);
 }

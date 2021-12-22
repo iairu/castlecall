@@ -37,7 +37,7 @@ class CollisionBox final : public Object {
         static std::unique_ptr<ppgso::Shader> shader;
     public:
         CollisionBox();
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override;
         void onClick(Scene &scene) override {}
 };

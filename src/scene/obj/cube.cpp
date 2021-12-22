@@ -14,7 +14,7 @@ Cube::Cube() {
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "cube.obj");
 }
 
-void Cube::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
+void Cube::render(Scene &scene) {
 
     shader->use();
 

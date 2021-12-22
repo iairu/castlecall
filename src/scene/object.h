@@ -4,7 +4,6 @@
 #include <map>
 
 #include <glm/glm.hpp>
-#include "ppgso.h"
 
 // Forward declare a scene
 class Scene;
@@ -24,7 +23,7 @@ public:
 
     virtual bool update(Scene &scene, float dt) = 0;
 
-    virtual void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) = 0;
+    virtual void render(Scene &scene) = 0;
 
     virtual void onClick(Scene &scene) {};
 

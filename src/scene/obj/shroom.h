@@ -22,7 +22,7 @@ class Shroom final : public Object {
     public:
         Shroom();
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
 
         bool update(Scene &scene, float dt) override;
 

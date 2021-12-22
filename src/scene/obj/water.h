@@ -69,7 +69,7 @@ class Water final : public Object {
         
         void unbuffer();
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
 
         bool update(Scene &scene, float dt) override;
 

@@ -22,7 +22,7 @@ class Cube final : public ForceObject {
     public:
         Cube();
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
 
         bool update(Scene &scene, float dt) override {
             super::update(scene, dt);

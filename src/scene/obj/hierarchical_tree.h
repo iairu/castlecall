@@ -22,7 +22,7 @@ class Trunk final : public Object {
 
         bool parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix);
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
@@ -39,7 +39,7 @@ class Leaves final : public Object {
 
         bool parent_update(glm::mat4 parentModelMatrix, glm::mat4 parentParentModelMatrix);
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
@@ -56,7 +56,7 @@ class Ground final : public Object {
 
         bool parent_update(glm::mat4 parentModelMatrix);
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
@@ -73,7 +73,7 @@ class Tree final : public Object {
 
         bool parent_update(glm::mat4 parentModelMatrix);
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override {return false;}
         void onClick(Scene &scene) override {}
 };
@@ -88,7 +88,7 @@ class HierarchicalTree final : public Object {
     public:
         HierarchicalTree();
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
         bool update(Scene &scene, float dt) override;
         void onClick(Scene &scene) override {}
 };

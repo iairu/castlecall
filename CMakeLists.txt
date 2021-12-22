@@ -72,8 +72,6 @@ set(PPGSO_SHADER_SRC
         shader/screen_pass_vert.glsl shader/screen_pass_frag.glsl
         shader/screen_blend_vert.glsl shader/screen_blend_frag.glsl
         shader/phong_vert.glsl shader/phong_frag.glsl
-        shader/shadowmap_debug_vert.glsl shader/shadowmap_debug_frag.glsl
-        shader/shadowmap_depth_vert.glsl shader/shadowmap_depth_frag.glsl
         )
 add_resources(shaders ${PPGSO_SHADER_SRC})
 

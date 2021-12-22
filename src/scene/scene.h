@@ -27,7 +27,7 @@ class Scene {
     
     public:
         void update(float time); // mass update all objects
-        void render(std::unique_ptr<ppgso::Shader> altShader); // mass render all objects
+        void render(); // mass render all objects
 
         // Camera
         std::unique_ptr<Camera> camera;

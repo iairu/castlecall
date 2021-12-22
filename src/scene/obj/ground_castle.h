@@ -20,7 +20,7 @@ class GroundCastle final : public Object {
     public:
         GroundCastle();
 
-        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
+        void render(Scene &scene) override;
 
         bool update(Scene &scene, float dt) override {
             generateModelMatrix();

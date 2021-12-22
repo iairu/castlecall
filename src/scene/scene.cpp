@@ -125,10 +125,10 @@ void Scene::update(float time) {
     // }
 }
 
-void Scene::render(std::unique_ptr<ppgso::Shader> altShader) {
+void Scene::render() {
     // Simply render all objects
     for ( auto& obj : objects )
-        obj->render(*this, move(altShader));
+        obj->render(*this);
 
     // Don't render collision boxes
     if (!renderCollisionBoxes)
@@ -136,7 +136,7 @@ void Scene::render(std::unique_ptr<ppgso::Shader> altShader) {
 
     // Simply render all collision boxes
     for ( auto& box : collisionboxes )
-        box->render(*this, move(altShader));
+        box->render(*this);
 }
 
 void Scene::registerSwitcher(unsigned int owner, glm::vec3 targets, glm::vec3 pos) {
