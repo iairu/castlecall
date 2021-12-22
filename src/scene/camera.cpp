@@ -153,6 +153,8 @@ void Camera::runScript(float dt) {
 
                 back += (rotationDiff * percentage);
                 position += (positionDiff * percentage);
+
+                // TODO: script bezi velmi rychlo a lock vyzera, ze nejde
             }
             else {
                 this->camera_script.erase(this->camera_script.begin());

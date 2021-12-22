@@ -29,8 +29,6 @@ private:
     Scene scene;
     Map * map;
 
-    unsigned int current_scene_id;
-
     // Post-processing: renderbuffer/framebuffer/colorbuffer/... parts, shaders, 2D "screen" output => rectangle (rect_...)
     unsigned int renderbuffer;
     unsigned int framebuffer_scene;
@@ -63,9 +61,8 @@ private:
 
         this->map = new Map;
         this->map->placeItems(1, &scene);
-        this->current_scene_id = 1;
-        /*this->map->placeItems(2, &scene);
-        this->map->placeItems(3, &scene);*/
+        this->map->placeItems(2, &scene);
+        this->map->placeItems(3, &scene);
 
         // ADD OBJECTS HERE
 
@@ -77,13 +74,6 @@ private:
 
             // Add a player to the scene
             // scene.objects.push_back()
-    }
-
-    void switchScene(unsigned int tgt_id) {
-        if(tgt_id == current_scene_id) return;
-        current_scene_id = tgt_id;
-        scene.objects.clear();
-        this->map->placeItems(current_scene_id, &scene);
     }
 
     // Creating framebuffers and colorbuffers
@@ -217,9 +207,6 @@ public:
         useFramebuffer(framebuffer_scene, true, true);
         // Update and render all objects
         scene.update(dt);
-
-        switchScene(scene.tgtScene());
-
         scene.render();
         render2D(colorbuffer_bright[0]);
 
@@ -264,9 +251,5 @@ public:
         post_shader_pass->use();
         render2D(colorbuffer_scene[0]);
 
-    }
-
-    ~SceneWindow() {
-        delete this->map;
     }
 };
