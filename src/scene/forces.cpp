@@ -115,7 +115,7 @@ bool CollisionBox::update(Scene &scene, float dt) {
     return true;
 }
 
-void CollisionBox::render(Scene &scene) {
+void CollisionBox::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
     generateModelMatrix();
     if (!shader) shader = std::make_unique<ppgso::Shader>(color_vert_glsl, color_frag_glsl);
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "cube.obj"); // cube.obj has scale set to 1,1,1 to match

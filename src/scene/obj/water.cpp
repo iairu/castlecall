@@ -198,33 +198,32 @@ bool Water::update(Scene &scene, float dt) {
     return true;
 }
 
-void Water::render(Scene &scene) {
-
-    shader->use();
+void Water::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
+    altShader->use();
 
     // Set up light
-    shader->setUniform("camPos", scene.camera->position);
-    shader->setUniform("lightPos1", scene.lightPos1);
-    shader->setUniform("lightPos2", scene.lightPos2);
-    shader->setUniform("lightPos3", scene.lightPos3);
-    shader->setUniform("tintColor1", scene.tintColor1);
-    shader->setUniform("tintColor2", scene.tintColor2);
-    shader->setUniform("tintColor3", scene.tintColor3);
+    altShader->setUniform("camPos", scene.camera->position);
+    altShader->setUniform("lightPos1", scene.lightPos1);
+    altShader->setUniform("lightPos2", scene.lightPos2);
+    altShader->setUniform("lightPos3", scene.lightPos3);
+    altShader->setUniform("tintColor1", scene.tintColor1);
+    altShader->setUniform("tintColor2", scene.tintColor2);
+    altShader->setUniform("tintColor3", scene.tintColor3);
 
-    shader->setUniform("matAmbient", scene.ambientColor);
-    shader->setUniform("matDiffuse", scene.diffuseColor);
-    shader->setUniform("matSpecular", scene.specularColor);
+    altShader->setUniform("matAmbient", scene.ambientColor);
+    altShader->setUniform("matDiffuse", scene.diffuseColor);
+    altShader->setUniform("matSpecular", scene.specularColor);
 
-    shader->setUniform("diffusePower", scene.diffusePower);
-    shader->setUniform("specularPower", scene.specularPower);
-    shader->setUniform("ambient", scene.ambient);
-    shader->setUniform("specLight", scene.specLight);
-    shader->setUniformInt("specAmountPow", scene.specAmountPow);
+    altShader->setUniform("diffusePower", scene.diffusePower);
+    altShader->setUniform("specularPower", scene.specularPower);
+    altShader->setUniform("ambient", scene.ambient);
+    altShader->setUniform("specLight", scene.specLight);
+    altShader->setUniformInt("specAmountPow", scene.specAmountPow);
 
-    shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
-    shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
-    shader->setUniform("ModelMatrix", modelMatrix);
-    shader->setUniform("Texture", *texture);
+    altShader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
+    altShader->setUniform("ViewMatrix", scene.camera->viewMatrix);
+    altShader->setUniform("ModelMatrix", modelMatrix);
+    altShader->setUniform("Texture", *texture);
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, (GLsizei)(sizeof(glm::vec3) * mesh.size()), GL_UNSIGNED_INT, 0); 

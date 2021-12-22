@@ -20,7 +20,7 @@ class WallGate final : public Object {
     public:
         WallGate();
 
-        void render(Scene &scene) override;
+        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
 
         bool update(Scene &scene, float dt) override {
             generateModelMatrix();

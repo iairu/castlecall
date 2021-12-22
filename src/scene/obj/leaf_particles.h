@@ -24,7 +24,7 @@ class LeafParticle final : public ForceObject {
         // these particles are used within hierarchical_tree - for that reason there is parent_update instead of just update
         bool parent_update(glm::mat4 parentModelMatrix, Scene &scene, float dt);
 
-        void render(Scene &scene) override;
+        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) override;
         bool update(Scene &scene, float dt) override {
             super::update(scene, dt);
             generateModelMatrix();
@@ -50,7 +50,7 @@ class LeafParticleSystem {
 
         void generateParticles();
         bool parent_update(glm::mat4 parentModelMatrix, Scene &scene, float dt);
-        void render(Scene &scene);
+        void render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader);
 };
 
 #endif

@@ -14,7 +14,7 @@ Skybox::Skybox() {
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "skybox.obj");
 }
 
-void Skybox::render(Scene &scene) {
+void Skybox::render(Scene &scene, std::unique_ptr<ppgso::Shader> altShader) {
 
     shader->use();
 

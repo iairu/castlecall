@@ -7,6 +7,14 @@
 
 #include "map.h"
 
+#include <shaders/shadowmap_debug_vert_glsl.h>
+#include <shaders/shadowmap_debug_frag_glsl.h>
+#include <shaders/shadowmap_depth_vert_glsl.h>
+#include <shaders/shadowmap_depth_frag_glsl.h>
+
+#include <shaders/phong_vert_glsl.h>
+#include <shaders/phong_frag_glsl.h>
+
 #include <shaders/screen_bright_vert_glsl.h>
 #include <shaders/screen_bright_frag_glsl.h>
 #include <shaders/screen_blur_vert_glsl.h>
@@ -30,6 +38,17 @@ private:
     Map * map;
 
     unsigned int current_scene_id;
+
+    // Shadowmap buffers and shaders
+    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    std::unique_ptr<ppgso::Shader> debugDepthQuad;
+    std::unique_ptr<ppgso::Shader> simpleDepthShader;
+    unsigned int depthMapFBO; // create depth framebuffer
+    unsigned int depthMap; // create depth texture
+    unsigned int quadVAO = 0;
+    unsigned int quadVBO;
+
+    std::unique_ptr<ppgso::Shader> phongShader;
 
     // Post-processing: renderbuffer/framebuffer/colorbuffer/... parts, shaders, 2D "screen" output => rectangle (rect_...)
     unsigned int renderbuffer;
@@ -134,9 +153,42 @@ private:
         glBindVertexArray(0);
     }
 
+    // shadowmaps debug
+    void renderQuad() {
+        if (quadVAO == 0)
+        {
+            float quadVertices[] = {
+                // positions        // texture Coords
+                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+                1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            };
+            // setup plane VAO
+            glGenVertexArrays(1, &quadVAO);
+            glGenBuffers(1, &quadVBO);
+            glBindVertexArray(quadVAO);
+            glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        }
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBindVertexArray(0);
+    }
+
 public:
     SceneWindow() : ppgso::Window{"CastleCall", SW_WIDTH, SW_HEIGHT} {
 
+        // Shaders for shadowmaps
+        debugDepthQuad = std::make_unique<ppgso::Shader>(shadowmap_debug_vert_glsl, shadowmap_debug_frag_glsl);
+        simpleDepthShader = std::make_unique<ppgso::Shader>(shadowmap_depth_vert_glsl, shadowmap_depth_frag_glsl);
+
+        // Shader for rendering of objects that will have shadows cast upon them (phong)
+        phongShader = std::make_unique<ppgso::Shader>(phong_vert_glsl, phong_frag_glsl);
 
         // Shaders for post-processing
         post_shader_pass = std::make_unique<ppgso::Shader>(screen_pass_vert_glsl, screen_pass_frag_glsl);
@@ -144,7 +196,33 @@ public:
         post_shader_blur = std::make_unique<ppgso::Shader>(screen_blur_vert_glsl, screen_blur_frag_glsl);
         post_shader_blend = std::make_unique<ppgso::Shader>(screen_blend_vert_glsl, screen_blend_frag_glsl);
 
-        // FRAMEBUFFER CREATION ---------------------------------
+        // SHADOWMAP FRAMEBUFFER CREATION ----------------------------
+        // unsigned int depthMapFBO; 
+        // create depth framebuffer
+        glGenFramebuffers(1, &depthMapFBO);
+
+        // unsigned int depthMap; 
+        // create depth texture
+        glGenTextures(1, &depthMap);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // use nearest neightbor filtering // todo change to improve pixelation?
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // use nearest neightbor filtering // todo change to improve pixelation?
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO); // attach depth texture to framebuffer as a depth buffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0); 
+        glDrawBuffer(GL_NONE); // we only care about depth, not color // todo undo afterwards?
+        glReadBuffer(GL_NONE); // we only care about depth, not color // todo undo afterwards?
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        debugDepthQuad->use(); // shader config // todo unnecessary default values just comment out this thing?
+        debugDepthQuad->setUniformInt("depthMap", 0);
+
+
+        // SHADOWMAP FRAMEBUFFER CREATION END ------------------------
+        // POST FRAMEBUFFER CREATION ---------------------------------
 
         // Create a framebuffer with attachments for post-processing
         // A post-process framebuffer consists of 2 color-attachments (color and bright-areas-color) (the rendered view will go here) 
@@ -181,7 +259,7 @@ public:
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-        // FRAMEBUFFER CREATION END -----------------------------
+        // POST FRAMEBUFFER CREATION END -----------------------------
 
         // glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
         // Initialize OpenGL state
@@ -210,59 +288,87 @@ public:
         // Compute time delta
         float dt = (float) glfwGetTime() - time;
 
-        // FRAMEBUFFER SCENE ---------------------------
-
-        // This is the only time we're rendering 3D to 2D (depth enabled)
-        // all other framebuffers will be 2D only (with depth disabled)
-        useFramebuffer(framebuffer_scene, true, true);
-        // Update and render all objects
+        // Update all objects first
         scene.update(dt);
-
         switchScene(scene.tgtScene());
+        
+        // SHADOWMAPS RENDER SCENE FROM LIGHT'S POW --------------
+        float near_plane = 1.0f, far_plane = 7.5f;
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        glm::mat4 lightView = glm::lookAt(scene.lightPos1, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0)); // todo for lightPos2 lightPos3
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+        // render scene from light's point of view
+        simpleDepthShader->use();
+        simpleDepthShader->setUniform("lightSpaceMatrix", lightSpaceMatrix);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT); // Clear depth buffer
+        glDisable(GL_DEPTH_TEST); // todo not sure if correct, try enabling if problems
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, woodTexture); // todo ????????????
+        scene.render(move(simpleDepthShader));
 
-        scene.render();
-        render2D(colorbuffer_bright[0]);
+        // SHADOWMAPS DEBUG RENDER CHECK -------------------------
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0,0,SW_WIDTH,SW_HEIGHT);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear depth and color buffers
 
-        // FRAMEBUFFER BRIGHTNESS -----------------------------
+        debugDepthQuad->use();
+        debugDepthQuad->setUniform("near_plane", near_plane);
+        debugDepthQuad->setUniform("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        renderQuad();
 
-        useFramebuffer(framebuffer_bright);
-        post_shader_bright->use();
-        render2D(colorbuffer_scene[0]);
+        // // FRAMEBUFFER SCENE ---------------------------
 
-        // FRAMEBUFFER BLUR ---------------------------------
+        // // This is the only time we're rendering 3D to 2D (depth enabled)
+        // // all other framebuffers will be 2D only (with depth disabled)
+        // useFramebuffer(framebuffer_scene, true, true);
+        // scene.render(phongShader);
+        // render2D(colorbuffer_bright[0]);
 
-        bool horizontal = true;
-        bool first_iteration = true;
-        unsigned int amount = 10;
-        post_shader_blur->use();
-        for (unsigned int i = 0; i < amount; i++) {
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_blur[horizontal]); 
-            post_shader_blur->setUniform("horizontal", horizontal ? 1.0 : 0.0);
-            render2D(first_iteration ? colorbuffer_bright[0] : colorbuffer_blur[!horizontal]);
-            horizontal = !horizontal;
-            if (first_iteration) first_iteration = false;
-        }
+        // // FRAMEBUFFER BRIGHTNESS -----------------------------
 
-        // OUTPUT BLEND -----------------------------
+        // useFramebuffer(framebuffer_bright);
+        // post_shader_bright->use();
+        // render2D(colorbuffer_scene[0]);
 
-        // colorbuffer_scene[0] contains untouched scene
-        // colorbuffer_bright[0] contains brightness filter
-        // colorbuffer_blur[0] contains blurred brightness filter
+        // // FRAMEBUFFER BLUR ---------------------------------
 
-        // Default framebuffer
-        useFramebuffer(0); 
+        // bool horizontal = true;
+        // bool first_iteration = true;
+        // unsigned int amount = 10;
+        // post_shader_blur->use();
+        // for (unsigned int i = 0; i < amount; i++) {
+        //     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_blur[horizontal]); 
+        //     post_shader_blur->setUniform("horizontal", horizontal ? 1.0 : 0.0);
+        //     render2D(first_iteration ? colorbuffer_bright[0] : colorbuffer_blur[!horizontal]);
+        //     horizontal = !horizontal;
+        //     if (first_iteration) first_iteration = false;
+        // }
 
-        // todo uncomment to bring back bloom (and comment-out the shader_pass,render2D below)
-        // post_shader_blend->use();
-        // post_shader_blend->setUniformInt("scene", 0);
-        // post_shader_blend->setUniformInt("bloomBlur", 1);
-        // post_shader_blend->setUniform("exposure", 1.0f);
-        // post_shader_blend->setUniform("gamma", 1.2f);
-        // post_shader_blend->setUniform("bloom", 1.0f);
-        // render2D(colorbuffer_scene[0], colorbuffer_blur[!horizontal]);
+        // // OUTPUT BLEND -----------------------------
 
-        post_shader_pass->use();
-        render2D(colorbuffer_scene[0]);
+        // // colorbuffer_scene[0] contains untouched scene
+        // // colorbuffer_bright[0] contains brightness filter
+        // // colorbuffer_blur[0] contains blurred brightness filter
+
+        // // Default framebuffer
+        // useFramebuffer(0); 
+
+        // // todo uncomment to bring back bloom (and comment-out the shader_pass,render2D below)
+        // // post_shader_blend->use();
+        // // post_shader_blend->setUniformInt("scene", 0);
+        // // post_shader_blend->setUniformInt("bloomBlur", 1);
+        // // post_shader_blend->setUniform("exposure", 1.0f);
+        // // post_shader_blend->setUniform("gamma", 1.2f);
+        // // post_shader_blend->setUniform("bloom", 1.0f);
+        // // render2D(colorbuffer_scene[0], colorbuffer_blur[!horizontal]);
+
+        // post_shader_pass->use();
+        // render2D(colorbuffer_scene[0]);
 
     }
 
