@@ -14,6 +14,13 @@ HighTower::HighTower() {
     if (!mesh) mesh = std::make_unique<ppgso::Mesh>(OBJ_PATH "high_tower.obj");
 }
 
+
+bool HighTower::update(Scene &scene, float dt) {
+    // Don't animate this object
+    generateModelMatrix();
+    return true;
+}
+
 void HighTower::render(Scene &scene) {
 
     shader->use();
