@@ -17,64 +17,64 @@ void Camera::update(Scene &scene, float dt) {
         this->runScript(dt);
     }
     else {
+        float speed = 0.01f;
         // Keyboard controls
         if(scene.keyboard[GLFW_KEY_LEFT]) {
-            position.x += 0.01; // lavo X
+            position.x += speed; // lavo X
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_RIGHT]) {
-            position.x -= 0.01; // pravo -X
+            position.x -= speed; // pravo -X
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_UP]) {
-            position.z += 0.01; // rovno Z
+            position.z += speed; // rovno Z
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_DOWN]) {
-            position.z -= 0.01; // dozadu -Z
+            position.z -= speed; // dozadu -Z
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_KP_1]) {
-            position.y += 0.01; // hore Y
+            position.y += speed; // hore Y
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_KP_3]) {
-            position.y -= 0.01; // dole -Y
+            position.y -= speed; // dole -Y
             std::cout << "pos x:" << position.x << "y:" << position.y << "z:" << position.z << std::endl;
 
 
         } else if(scene.keyboard[GLFW_KEY_Q]) {
-            up.x += 0.01; // hojdacka (naklon lietadla)
+            up.x += speed; // hojdacka (naklon lietadla)
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_W]) {
-            up.x -= 0.01; // hojdacka (naklon lietadla)
+            up.x -= speed; // hojdacka (naklon lietadla)
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_E]) {
-            up.z += 0.01;
+            up.z += speed;
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_R]) {
-            up.z -= 0.01;
+            up.z -= speed;
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_T]) {
-            up.y += 0.01;
+            up.y += speed;
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_Z]) {
-             up.y -= 0.01;
+             up.y -= speed;
             std::cout << "up x:" << up.x << "y:" << up.y << "z:" << up.z << std::endl;
 
-        // velmi blba rotacia
         } else if(scene.keyboard[GLFW_KEY_A]) {
-            back.x += 0.01;
+            back.x += speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_S]) {
-            back.x -= 0.01;
+            back.x -= speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_D]) {
-            back.z += 0.01;
+            back.z += speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_F]) {
-            back.z -= 0.01;
+            back.z -= speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_G]) {
-            back.y += 0.01;
+            back.y += speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } else if(scene.keyboard[GLFW_KEY_H]) {
-            back.y -= 0.01;
+            back.y -= speed;
             std::cout << "back x:" << back.x << "y:" << back.y << "z:" << back.z << std::endl;
         } 
 

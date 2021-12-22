@@ -28,10 +28,10 @@ Water::Water() {
     buffer(true);
 
     // Initial transformation (because predefined controlPoints are not rotated/scaled well)
-    rotation.x = 1.64;
+    rotation.x = 1.64f;
     scale.x = 40;
     scale.y = 40;
-    position.y = -4.21;
+    position.y = -4.21f;
 }
 Water::~Water() {
     unbuffer();
@@ -188,7 +188,7 @@ bool Water::update(Scene &scene, float dt) {
     // }
 
     // Animate cp_x control point
-    cp_x = cos(dt);
+    cp_x = (float) cos(dt);
     updateControlPoints(false);
     // Update vertex buffer
     buffer(false);

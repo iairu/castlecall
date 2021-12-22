@@ -59,6 +59,10 @@ void LeafParticle::render(Scene &scene) {
 }
 
 LeafParticleSystem::LeafParticleSystem() {
+    
+}
+
+void LeafParticleSystem::generateParticles() {
     // Generate first n particles
     for(int i = 0; i < n; i++) {
         generateParticle();
@@ -80,14 +84,10 @@ void LeafParticleSystem::generateParticle() {
     if (negate2 > 0.5) useZ = true;
 
     // Build the starting position of the particle
-    glm::vec3 startPos;
-    if (!useZ)
-        startPos = glm::vec3{x, height, 0.0f};
-    else
-        startPos = glm::vec3{0.0f, height, x};
+    glm::vec3 startPos = glm::vec3{useZ ? 0.0f : x, height, useZ ? x : 0.0f};
 
     // Generate a random decayTime
-    float decayTime = min_gen_decayTime + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (min_gen_decayTime - max_gen_decayTime)));
+    float decayTime = min_gen_decayTime + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max_gen_decayTime - min_gen_decayTime)));
     // <min_gen_decayTime;max_gen_decayTime>
 
     // Create the particle with generated values

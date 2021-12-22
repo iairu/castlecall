@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 
 typedef struct _MOVE {
-    double start; // time to start since last action finish
-    double duration; // remaining time
+    float start; // time to start since last action finish
+    float duration; // remaining time
     glm::vec3 target_pos;
     glm::vec3 target_rot;
 } MOVE, *PMOVE;

@@ -183,11 +183,10 @@ HierarchicalTree::HierarchicalTree() {
     tree = std::make_unique<Tree>();
     ground = std::make_unique<Ground>();
     leafParticles = std::make_unique<LeafParticleSystem>();
-    // todo assign transformations to tree
-    // todo assign transformations to ground
     tree->position = {0,0,0};
     ground->position = {1,0,0};
-    // leafParticle->position = {2.0f,6.0f,0};
+    // leafParticles->n = 5; // change particle system properties firrt if needed
+    leafParticles->generateParticles(); // initialize the particle system
 }
 
 bool HierarchicalTree::update(Scene &scene, float dt) {
