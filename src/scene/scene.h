@@ -38,8 +38,8 @@ class Scene {
         glm::vec3 diffuseColor = glm::vec3{1.0f, 1.0f, 1.0f};
         
         float ambient = 0.2f;
-        float attenuationA = 0.88f;
-        float attenuationB = 0.14f;
+        float diffusePower = 0.88f;
+        float specularPower = 0.14f;
         float specLight = 1.54f;
         int specAmountPow = 8;
 

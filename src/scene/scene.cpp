@@ -74,22 +74,22 @@ void Scene::update(float time) {
     //     std::cout << "tintColor1 r:" << tintColor1.r << " g:" << tintColor1.g <<  " b:" << tintColor1.b << std::endl;
     // }
 
-    // // attenuation
-    // if(keyboard[GLFW_KEY_1]) {
-    //     attenuationA += 0.01f;
-    // }
-    // else if(keyboard[GLFW_KEY_2]) {
-    //     attenuationA -= 0.01f;
-    // }
-    // else if(keyboard[GLFW_KEY_3]) {
-    //     attenuationB += 0.01f;
-    // }
-    // else if(keyboard[GLFW_KEY_4]) {
-    //     attenuationB -= 0.01f;
-    // }
-    // else if(keyboard[GLFW_KEY_5]) {
-    //     std::cout << "att a:" << attenuationA << " b:" << attenuationB << std::endl;
-    // }
+    // adjust light dampening
+    if(keyboard[GLFW_KEY_1]) {
+        diffusePower += 0.03f;
+    }
+    else if(keyboard[GLFW_KEY_2]) {
+        diffusePower -= 0.03f;
+    }
+    else if(keyboard[GLFW_KEY_3]) {
+        specularPower += 0.03f;
+    }
+    else if(keyboard[GLFW_KEY_4]) {
+        specularPower -= 0.03f;
+    }
+    else if(keyboard[GLFW_KEY_5]) {
+        std::cout << "power d:" << diffusePower << " s:" << specularPower << std::endl;
+    }
 
     // // specular
     // if(keyboard[GLFW_KEY_6]) {

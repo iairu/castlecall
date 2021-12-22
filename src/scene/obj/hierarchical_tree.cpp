@@ -46,8 +46,8 @@ void Trunk::render(Scene &scene) {
     shader->setUniform("matDiffuse", scene.diffuseColor);
     shader->setUniform("matSpecular", scene.specularColor);
 
-    shader->setUniform("attenuationA", scene.attenuationA);
-    shader->setUniform("attenuationB", scene.attenuationB);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
     shader->setUniform("ambient", scene.ambient);
     shader->setUniform("specLight", scene.specLight);
     shader->setUniformInt("specAmountPow", scene.specAmountPow);
@@ -74,8 +74,8 @@ void Leaves::render(Scene &scene) {
     shader->setUniform("matDiffuse", scene.diffuseColor);
     shader->setUniform("matSpecular", scene.specularColor);
 
-    shader->setUniform("attenuationA", scene.attenuationA);
-    shader->setUniform("attenuationB", scene.attenuationB);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
     shader->setUniform("ambient", scene.ambient);
     shader->setUniform("specLight", scene.specLight);
     shader->setUniformInt("specAmountPow", scene.specAmountPow);
@@ -102,8 +102,8 @@ void Ground::render(Scene &scene) {
     shader->setUniform("matDiffuse", scene.diffuseColor);
     shader->setUniform("matSpecular", scene.specularColor);
 
-    shader->setUniform("attenuationA", scene.attenuationA);
-    shader->setUniform("attenuationB", scene.attenuationB);
+    shader->setUniform("diffusePower", scene.diffusePower);
+    shader->setUniform("specularPower", scene.specularPower);
     shader->setUniform("ambient", scene.ambient);
     shader->setUniform("specLight", scene.specLight);
     shader->setUniformInt("specAmountPow", scene.specAmountPow);

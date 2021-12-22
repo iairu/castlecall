@@ -16,8 +16,8 @@ uniform vec3 tintColor1;
 uniform vec3 tintColor2;
 uniform vec3 tintColor3;
 
-uniform float attenuationA;
-uniform float attenuationB;
+uniform float diffusePower;
+uniform float specularPower;
 
 uniform float ambient;
 
@@ -29,12 +29,9 @@ uniform vec3 matDiffuse;
 uniform vec3 matSpecular;
 
 vec4 calcColorForLight(vec3 lightPos, vec3 tintColor) {
-    // Light direction
+    // Light direction + lightDist
     vec3 lightDir = normalize(lightPos - vertPos);
-
-    // Light attenuation
-    float distance = length(lightDir);
-    float attenuation = 1.0f / (attenuationA * pow(distance, 2) + attenuationB * distance);
+    float lightDist = length(lightDir);
 
     // PHONG
 
@@ -48,17 +45,17 @@ vec4 calcColorForLight(vec3 lightPos, vec3 tintColor) {
     // Specular component
     vec3 viewDir = normalize(camPos - vertPos);
     vec3 reflectDir = reflect(-lightDir, vertNormal);
-    float specAmount = pow(max(dot(viewDir, reflectDir), 0.0f), specAmountPow);
-    float specular = specAmount * specLight;
+    float specIntensity = pow(max(dot(viewDir, reflectDir), 0.0f), specAmountPow);
+    float specular = specIntensity * specLight;
 
     // Combined light and material components
     vec4 combAmbient = vec4(matAmbient * ambient, 1.0f);
-    vec4 combDiffuse = vec4(matDiffuse * diffuse, 1.0f);
-    vec4 combSpecular = vec4(matSpecular * specular, 1.0f);
+    vec4 combDiffuse = vec4(matDiffuse * diffuse, 1.0f) * diffusePower / lightDist;
+    vec4 combSpecular = vec4(matSpecular * specular, 1.0f) * specularPower / lightDist;
 
-    // Color calc from texture, attenuation, diffuse, ambient, specular
+    // Color calc from texture, combined diffuse, ambient, specular
     vec4 tex = texture(Texture, vec2(vertTexCoord.x, 1.0f - vertTexCoord.y));
-    return (tex * (combDiffuse * attenuation + combAmbient) + tex * (combSpecular * attenuation)) * vec4(tintColor, 1.0f);
+    return (tex * (combDiffuse + combAmbient) + tex * combSpecular) * vec4(tintColor, 1.0f);
 }
 
 void main()
